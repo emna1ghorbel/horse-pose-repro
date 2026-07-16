@@ -1,0 +1,12 @@
+checkpoints/
+checkpoints_*/
+data/raw/
+*.pt
+*.pth
+*.pth.tar
+__pycache__/
+*.pyc
+.pytest_cache/
+venv/
+.env
+.ipynb_checkpoints/
