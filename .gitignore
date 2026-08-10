@@ -1,13 +1,115 @@
+# =============================================================
+# Python
+# =============================================================
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+*.egg
+*.egg-info/
+dist/
+build/
+.eggs/
+
+# =============================================================
+# Environnements virtuels
+# =============================================================
+venv/
+.venv/
+env/
+.env
+.env.*
+
+# =============================================================
+# Jupyter / IPython
+# =============================================================
+.ipynb_checkpoints/
+*.ipynb_checkpoints
+
+# =============================================================
+# Tests / CI
+# =============================================================
+.pytest_cache/
+.coverage
+htmlcov/
+
+# =============================================================
+# Poids de modèles & checkpoints (fichiers lourds)
+# =============================================================
 checkpoints/
 checkpoints_*/
-data/raw/
 *.pt
 *.pth
 *.pth.tar
-__pycache__/
-*.pyc
-.pytest_cache/
-venv/
-.env
-.ipynb_checkpoints/
-.venv/
+*.ckpt
+*.safetensors
+*.onnx
+*.bin
+
+# =============================================================
+# Données brutes et datasets (trop lourds pour git)
+# =============================================================
+# Archives
+*.tar.gz
+*.zip
+*.tar
+*.gz
+*.7z
+*.rar
+
+# Données brutes
+data/raw/
+data/processed/
+
+# Datasets externes (téléchargés localement)
+external/learning-from-synthetic-animals/
+
+# Repo externe cloné localement (a son propre .git — exclure pour éviter
+# les problèmes de nested repo ; utiliser git submodule si besoin)
+Learning-from-Synthetic-Animals/
+
+# Frames vidéo / images extraites
+data/youtube_all_frames/
+data/youtube_frames/
+data/raw/youtube_all_frames/
+data/raw/youtube_frames/
+data/raw/behaviorDiscovery2.0/
+data/raw/horse_synthetic/
+data/raw/weizmann_horse/
+
+# =============================================================
+# Images générées / visualisations (grandes, régénérables)
+# =============================================================
+*.png
+*.jpg
+*.jpeg
+*.gif
+*.bmp
+*.tiff
+# Réintégrer les petites images de doc si besoin :
+# !docs/**/*.png
+
+# =============================================================
+# IDE / éditeurs
+# =============================================================
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# =============================================================
+# OS
+# =============================================================
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# =============================================================
+# Divers
+# =============================================================
+logs/
+runs/
+wandb/
+mlruns/
+*.log

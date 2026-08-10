@@ -1,0 +1,76 @@
+"""
+Applique la revue manuelle sur candidates_shorts.txt et écrit un fichier nettoyé.
+
+Usage :
+    python clean_candidates_shorts.py --input candidates_shorts.txt --output candidates_shorts_reviewed.txt
+"""
+import argparse
+import re
+
+# Bons candidats confirmés (corps entier visible, pas de gros-plan seul,
+# pas d'instructionnel avec humain au premier plan, pas de fail/compilation,
+# bonne identification "cheval" -- exclut les faux positifs "Mustang" voiture).
+KEEP_IDS = {
+    "DkBgTT83jiE", "PiB1XuCgbRM", "Ux7UN4fiuE0", "AToJugUWtXI", "goQNctgljKI",
+    "ugt-Oj-YdbQ", "giOAkmR8gP8", "xh1JGWsbLk4", "MvWwEhElfW8", "xrAjqsVcaAo",
+    "OUJ-0iBtVgU", "SRAqmN47Ghw", "CN1y5pAsyHE", "Gy8yUqmrZO4", "c3ezC10eziY",
+    "dp4zfPEpCVs", "FLqE861USwk", "Ii5UFi2T0Tg", "JReyGTjQvMo", "JqvLe5FP2cI",
+    "8ukAGCqPCy4", "VJkeGyF-hic", "CKO29R5_YR4", "wusynOpUXJk", "hWSFZJeAKwg",
+    "P4qTUwMtbRE", "BOG2P9ApEjU", "qPghUHvFMwQ", "teK3eSC8OhE", "ZPSbTUlTslA",
+    "p3WYSUnNU9U", "ysVEE1ZzLow", "HWJSIGvNFZw", "LWNhOdkhzcc", "6wyschH6K3o",
+    "vEmM-t5_L4w", "WswlnLDFipY", "w4EdtH1TUSM", "J6BEA-3WFwE", "75i2u67ij4w",
+    "3CDG-FjN6_U", "yW_1mAPKZ-M", "x68Wg-fkKXE", "IKdD7DnB8R4", "wrm2ZIHl7PQ",
+    "_RWPTtO2I-w", "4UQ80tIiDRQ", "0Y3nYEF3CTw", "1iswZBPTvco", "bwfAJG8EYe8",
+    "kSa4t_HeRsQ", "Mt8MA0BVab8", "6jBOn7d1vso", "OS0lUmlRDsQ", "yIxEQgreAtc",
+    "LdIATYcWdxA", "gSezoGZXCOs", "rU9huNiJ338", "43GCtVwBVKA", "sXvHd8yXWog",
+    "iwOrIP2KW64", "McmCt_GbaeM", "hHGTMlh6ar8", "36M8_6W50fw", "ig0ANQrp5aI",
+    "nspXiaw3yLw", "qUJVspjaqcI", "IAicDdZ_5d4", "ZrvcxvSvE1I", "WkHrnb_xxSo",
+    "XRevFtPQB68", "QL-QHAyTb34", "vYSMPmJkW5Q", "rXtCmNfbX_s", "KoSJ0WMf0xY",
+    "AKWW3bJSvUo", "5mA0x23mt9U", "NZa7nP6Dvtk", "rqMj0Uhh7HE", "_MXaIXcIhas",
+    "JfqgHx3en9c", "k0EoxOP-MG4", "f0X_ZWkdQXs", "dIcyKTa9Pwg", "J6jEviiaX3A",
+    "dV3gdHsStns", "djnXPZYTz9Y", "O6BoYnV6rEE", "ZtG3Skh5PT4", "mK9bpfAHlDU",
+    "m2lTvXN8BBU", "BBLCweDaZEY", "0r_wP1x5AzQ", "xj2x3cGtbBY", "pMMMnhiKbxc",
+    "Jcy4wpRwJ54", "PumSmco2gio", "doEg9f9fewU", "Syo2x7RlXeY", "_RXht_TiiRg",
+    "uzoAivbD3P4", "-SPoV_lCHd0", "qwlkCNO7TZc",
+}
+
+# Retirés ensuite : plusieurs chevaux visibles dans le cadre (troupeau, paire,
+# course, vente aux enchères) -- le pipeline suppose un seul squelette par
+# image, un second cheval dans le cadre risque de fausser les keypoints.
+MULTI_HORSE_IDS = {
+    "ugt-Oj-YdbQ", "giOAkmR8gP8", "teK3eSC8OhE", "ig0ANQrp5aI", "AToJugUWtXI",
+    "FLqE861USwk", "hWSFZJeAKwg", "hHGTMlh6ar8", "vYSMPmJkW5Q", "djnXPZYTz9Y",
+    "O6BoYnV6rEE", "ZtG3Skh5PT4", "mK9bpfAHlDU", "McmCt_GbaeM", "wrm2ZIHl7PQ",
+    "1iswZBPTvco", "bwfAJG8EYe8", "pMMMnhiKbxc",
+}
+KEEP_IDS -= MULTI_HORSE_IDS
+
+ID_RE = re.compile(r"watch\?v=([A-Za-z0-9_-]{11})")
+
+
+def main():
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--input", default="candidates_shorts.txt")
+    parser.add_argument("--output", default="candidates_shorts_reviewed.txt")
+    args = parser.parse_args()
+
+    kept_lines, dropped = 0, 0
+    with open(args.input, "r", encoding="utf-8") as f_in, \
+         open(args.output, "w", encoding="utf-8") as f_out:
+        for line in f_in:
+            stripped = line.strip()
+            if not stripped or stripped.startswith("#"):
+                continue
+            match = ID_RE.search(stripped)
+            if match and match.group(1) in KEEP_IDS:
+                f_out.write(line)
+                kept_lines += 1
+            else:
+                dropped += 1
+
+    print(f"{kept_lines} vidéos gardées -> {args.output}")
+    print(f"{dropped} vidéos écartées")
+
+
+if __name__ == "__main__":
+    main()
