@@ -23,7 +23,7 @@ from adversarial_loss import discriminator_loss, generator_adversarial_loss
 from geometric_consistency import geometric_consistency_loss
 from train import build_models, train_step, render_skeleton_batch, omega_loss_fn
 
-N_KEYPOINTS = 20
+N_KEYPOINTS = 18
 BATCH_SIZE = 4
 
 

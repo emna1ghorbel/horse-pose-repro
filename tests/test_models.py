@@ -17,7 +17,7 @@ from skeleton_to_pose2d import SkeletonToPose2D
 from lifting_2d_3d import Lifting2Dto3D
 from renderer import GeometricConsistencyLoop, random_rotation_matrix, apply_rotation, project_to_2d
 
-N_KEYPOINTS = 20
+N_KEYPOINTS = 18
 BATCH_SIZE = 4
 
 

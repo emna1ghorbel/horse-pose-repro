@@ -109,8 +109,8 @@ if __name__ == "__main__":
     from lifting_2d_3d import Lifting2Dto3D
 
     phi = ImageToSkeleton()
-    omega = SkeletonToPose2D(n_keypoints=20)
-    lambda_net = Lifting2Dto3D(n_keypoints=20)
+    omega = SkeletonToPose2D(n_keypoints=18)
+    lambda_net = Lifting2Dto3D(n_keypoints=18)
     loop = GeometricConsistencyLoop(lambda_net)
 
     dummy_image = torch.randn(4, 3, 128, 128)

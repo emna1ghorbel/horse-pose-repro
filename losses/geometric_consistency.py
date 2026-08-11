@@ -78,8 +78,8 @@ if __name__ == "__main__":
 
     batch_size = 4
     phi = ImageToSkeleton()
-    omega = SkeletonToPose2D(n_keypoints=20)
-    lambda_net = Lifting2Dto3D(n_keypoints=20)
+    omega = SkeletonToPose2D(n_keypoints=18)
+    lambda_net = Lifting2Dto3D(n_keypoints=18)
     geo_loop = GeometricConsistencyLoop(lambda_net)
 
     dummy_image = torch.randn(batch_size, 3, 128, 128)

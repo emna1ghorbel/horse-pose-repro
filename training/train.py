@@ -79,7 +79,7 @@ def omega_loss_fn(omega_net, phi_net, y_pred: torch.Tensor, skeleton_pred: torch
     return term1 + lam * term2
 
 
-def build_models(n_keypoints: int = 20):
+def build_models(n_keypoints: int = 18):
     phi = ImageToSkeleton()
     omega = SkeletonToPose2D(n_keypoints=n_keypoints)
     lambda_net = Lifting2Dto3D(n_keypoints=n_keypoints)
@@ -181,7 +181,7 @@ def main():
 
         for batch_idx in range(args.batches_per_epoch):
             batch_images = torch.randn(args.batch_size, 3, 128, 128, device=device)
-            batch_prior_poses = torch.rand(args.batch_size, 20, 2, device=device) * 2 - 1  # [-1,1]
+            batch_prior_poses = torch.rand(args.batch_size, 18, 2, device=device) * 2 - 1  # [-1,1]
 
             losses = train_step(batch_images, batch_prior_poses, models, optimizers)
 

@@ -26,7 +26,7 @@ DEFAULT_CONSTANT_DEPTH = 0.0
 class Lifting2Dto3D(nn.Module):
     """Lambda : pose 2D (K, 2) -> pose 3D (K, 3), via un MLP par point clé."""
 
-    def __init__(self, n_keypoints: int = 20, hidden_dim: int = 256,
+    def __init__(self, n_keypoints: int = 18, hidden_dim: int = 256,
                  constant_depth: float = DEFAULT_CONSTANT_DEPTH):
         super().__init__()
         self.n_keypoints = n_keypoints
@@ -59,7 +59,7 @@ class Lifting2Dto3D(nn.Module):
 
 
 if __name__ == "__main__":
-    model = Lifting2Dto3D(n_keypoints=20)
+    model = Lifting2Dto3D(n_keypoints=18)
     dummy_pose2d = torch.randn(4, 20, 2)
     output = model(dummy_pose2d)
 
@@ -77,7 +77,7 @@ if __name__ == "__main__":
     from skeleton_to_pose2d import SkeletonToPose2D
 
     phi = ImageToSkeleton()
-    omega = SkeletonToPose2D(n_keypoints=20)
+    omega = SkeletonToPose2D(n_keypoints=18)
 
     dummy_image = torch.randn(4, 3, 128, 128)
     skeleton = phi(dummy_image)

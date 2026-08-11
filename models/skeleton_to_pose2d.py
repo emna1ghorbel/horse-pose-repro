@@ -57,7 +57,7 @@ def soft_argmax_2d(heatmaps: torch.Tensor) -> torch.Tensor:
 class SkeletonToPose2D(nn.Module):
     """Omega : image squelette (1,128,128) -> pose 2D (K, 2)."""
 
-    def __init__(self, n_keypoints: int = 20, base_channels: int = 32):
+    def __init__(self, n_keypoints: int = 18, base_channels: int = 32):
         super().__init__()
         c = base_channels
         self.n_keypoints = n_keypoints
@@ -90,7 +90,7 @@ class SkeletonToPose2D(nn.Module):
 
 
 if __name__ == "__main__":
-    model = SkeletonToPose2D(n_keypoints=20)
+    model = SkeletonToPose2D(n_keypoints=18)
     dummy_skeleton = torch.randn(4, 1, 128, 128)
     output = model(dummy_skeleton)
 
