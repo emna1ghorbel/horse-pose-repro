@@ -107,7 +107,7 @@ def build_models(n_keypoints: int = 18):
 
 
 def train_step(batch_images, batch_masks, batch_prior_poses, models, optimizers,
-               loss_weights=None):
+               loss_weights=None, d_freeze_threshold=0.2):
     phi, omega, lambda_net, discriminator, geo_loop = models
     opt_generator, opt_discriminator = optimizers
     loss_weights = loss_weights or {
@@ -167,9 +167,12 @@ def train_step(batch_images, batch_masks, batch_prior_poses, models, optimizers,
 
     # ---- Backward + step : discriminateur ensuite ----
     # Les poids de D ne sont plus référencés par un graphe actif → step() sûr.
-    opt_discriminator.zero_grad()
-    loss_d.backward()
-    opt_discriminator.step()
+    if loss_d.item() > d_freeze_threshold:
+        opt_discriminator.zero_grad()
+        loss_d.backward()
+        opt_discriminator.step()
+    else:
+        opt_discriminator.zero_grad()
 
     return {
         "loss_d": loss_d.item(),
@@ -203,6 +206,8 @@ def main():
     parser.add_argument("--weight-background", type=float, default=1.0)
     parser.add_argument("--pretrain-omega-epochs", type=int, default=10,
                          help="Nombre d'epochs de pre-entrainement d'Omega seul (defaut: 10)")
+    parser.add_argument("--d-freeze-threshold", type=float, default=0.2,
+                        help="Seuil de loss_d sous lequel on ne met plus à jour le discriminateur")
     args = parser.parse_args()
 
     if min(args.weight_adversarial, args.weight_geometric, args.weight_omega,
@@ -225,7 +230,7 @@ def main():
 
     generator_params = list(phi.parameters()) + list(omega.parameters()) + list(lambda_net.parameters())
     opt_generator = torch.optim.Adam(generator_params, lr=args.lr)
-    opt_discriminator = torch.optim.Adam(discriminator.parameters(), lr=args.lr)
+    opt_discriminator = torch.optim.Adam(discriminator.parameters(), lr=args.lr / 10.0)
 
     models = (phi, omega, lambda_net, discriminator, geo_loop)
     optimizers = (opt_generator, opt_discriminator)
@@ -309,7 +314,7 @@ def main():
                 batch_prior_poses = prior_poses[prior_indices].to(device, non_blocking=True)
 
             losses = train_step(batch_images, batch_masks, batch_prior_poses, models, optimizers,
-                                loss_weights=loss_weights)
+                                loss_weights=loss_weights, d_freeze_threshold=args.d_freeze_threshold)
 
             for k, v in losses.items():
                 epoch_losses[k] += v
