@@ -43,7 +43,7 @@ HORSE_EDGES = [
     (2, 11), (2, 12),            # Cou
 ]
 
-def render_skeleton_batch(poses_2d: torch.Tensor, size: int = 128, sigma: float = 0.5, steps: int = 20) -> torch.Tensor:
+def render_skeleton_batch(poses_2d: torch.Tensor, size: int = 128, sigma: float = 3.0, steps: int = 20) -> torch.Tensor:
     """
     Fonction beta DIFFERENTIABLE : rend un batch de poses 2D (batch, K, 2)
     en images de squelette (batch, 1, size, size).
