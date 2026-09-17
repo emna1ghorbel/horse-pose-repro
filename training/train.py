@@ -124,16 +124,10 @@ def train_step(batch_images, batch_masks, batch_prior_poses, models, optimizers,
 
     # ---- F5 : discriminateur ----
     w = render_skeleton_batch(batch_prior_poses)  # squelette "réel" depuis le prior
-    discriminator.train()
-    loss_d = discriminator_loss(discriminator(w), discriminator(s.detach()))
-    opt_discriminator.zero_grad()
-    loss_d.backward()
-    opt_discriminator.step()
-
-    discriminator.eval()
-    for parameter in discriminator.parameters():
-        parameter.requires_grad_(False)
+    d_score_real = discriminator(w)
+    d_score_fake = discriminator(s.detach())
     d_score_fake_for_g = discriminator(s)
+    loss_d = discriminator_loss(d_score_real, d_score_fake)
 
     # ---- Pertes (TOUS les forwards terminés AVANT tout optimizer.step) ----
     # Calculer toutes les pertes ici pour éviter que opt_discriminator.step()
@@ -170,12 +164,13 @@ def train_step(batch_images, batch_masks, batch_prior_poses, models, optimizers,
     opt_generator.zero_grad()
     loss_total_generator.backward()
     opt_generator.step()
-    for parameter in discriminator.parameters():
-        parameter.requires_grad_(True)
-    discriminator.train()
 
     # ---- Backward + step : discriminateur ensuite ----
     # Les poids de D ne sont plus référencés par un graphe actif → step() sûr.
+    opt_discriminator.zero_grad()
+    loss_d.backward()
+    opt_discriminator.step()
+
     return {
         "loss_d": loss_d.item(),
         "loss_g_adv": loss_g_adv.item(),
