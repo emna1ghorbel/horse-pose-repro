@@ -29,6 +29,7 @@ from renderer import GeometricConsistencyLoop
 from discriminator import Discriminator
 from adversarial_loss import discriminator_loss, generator_adversarial_loss
 from geometric_consistency import geometric_consistency_loss
+from diversity_loss import diversity_loss
 from real_image_dataset import HorseImageDataset
 
 HORSE_EDGES = [
@@ -139,6 +140,7 @@ def train_step(batch_images, batch_masks, batch_prior_poses, models, optimizers,
     loss_gc = gc_losses["L_GC"]
 
     loss_omega = omega_loss_fn(omega, y, s, batch_prior_poses)
+    loss_div = diversity_loss(s)
 
     # Pénalité de fond L1 (pour forcer le squelette à rester dans la silhouette)
     if batch_masks is not None:
@@ -151,6 +153,7 @@ def train_step(batch_images, batch_masks, batch_prior_poses, models, optimizers,
         + loss_weights["geometric"] * loss_gc
         + loss_weights["omega"] * loss_omega
         + loss_weights["background"] * loss_background
+        + loss_weights.get("diversity", 1.0) * loss_div
     )
 
     # ---- Backward + step : générateur d'abord ----
@@ -179,6 +182,7 @@ def train_step(batch_images, batch_masks, batch_prior_poses, models, optimizers,
         "loss_g_adv": loss_g_adv.item(),
         "loss_gc": loss_gc.item(),
         "loss_omega": loss_omega.item(),
+        "loss_diversity": loss_div.item(),
         "loss_background": loss_background.item(),
         "loss_total": loss_total_generator.item(),
     }
@@ -204,6 +208,7 @@ def main():
     parser.add_argument("--weight-geometric", type=float, default=1.0)
     parser.add_argument("--weight-omega", type=float, default=1.0)
     parser.add_argument("--weight-background", type=float, default=1.0)
+    parser.add_argument("--weight-diversity", type=float, default=1.0)
     parser.add_argument("--pretrain-omega-epochs", type=int, default=10,
                          help="Nombre d'epochs de pre-entrainement d'Omega seul (defaut: 10)")
     parser.add_argument("--d-freeze-threshold", type=float, default=0.2,
@@ -239,6 +244,7 @@ def main():
         "geometric": args.weight_geometric,
         "omega": args.weight_omega,
         "background": args.weight_background,
+        "diversity": args.weight_diversity,
     }
 
     if args.dummy:
@@ -296,7 +302,7 @@ def main():
 
     for epoch in range(1, args.epochs + 1):
         epoch_losses = {"loss_d": 0, "loss_g_adv": 0, "loss_gc": 0, "loss_omega": 0,
-                        "loss_background": 0, "loss_total": 0}
+                        "loss_diversity": 0, "loss_background": 0, "loss_total": 0}
 
         if real_loader is not None:
             batch_iter = iter(real_loader)
