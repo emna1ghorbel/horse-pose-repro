@@ -44,8 +44,9 @@ def optimizers(models):
 @pytest.fixture
 def dummy_batch():
     images = torch.randn(BATCH_SIZE, 3, 128, 128)
+    masks = torch.ones(BATCH_SIZE, 1, 128, 128)
     prior_poses = torch.rand(BATCH_SIZE, N_KEYPOINTS, 2) * 2 - 1
-    return images, prior_poses
+    return images, masks, prior_poses
 
 
 # --- Tests unitaires du discriminateur ---
@@ -122,8 +123,8 @@ def test_render_skeleton_batch_differentiable():
 # --- Test d'intégration : un train_step complet, sur plusieurs itérations ---
 
 def test_train_step_runs_without_error(models, optimizers, dummy_batch):
-    images, prior_poses = dummy_batch
-    losses = train_step(images, prior_poses, models, optimizers)
+    images, masks, prior_poses = dummy_batch
+    losses = train_step(images, masks, prior_poses, models, optimizers)
 
     for key in ["loss_d", "loss_g_adv", "loss_gc", "loss_omega", "loss_total"]:
         assert key in losses
@@ -134,8 +135,9 @@ def test_train_step_stable_over_multiple_iterations(models, optimizers):
     """Simule quelques itérations pour vérifier l'absence de divergence rapide."""
     for _ in range(5):
         images = torch.randn(BATCH_SIZE, 3, 128, 128)
+        masks = torch.ones(BATCH_SIZE, 1, 128, 128)
         prior_poses = torch.rand(BATCH_SIZE, N_KEYPOINTS, 2) * 2 - 1
-        losses = train_step(images, prior_poses, models, optimizers)
+        losses = train_step(images, masks, prior_poses, models, optimizers)
 
         for key, val in losses.items():
             assert val == val, f"{key} est devenu NaN pendant l'entraînement"
@@ -145,10 +147,10 @@ def test_train_step_stable_over_multiple_iterations(models, optimizers):
 def test_discriminator_weights_change_after_step(models, optimizers, dummy_batch):
     """Vérifie que le discriminateur apprend bien (ses poids changent après un step)."""
     phi, omega, lambda_net, discriminator, geo_loop = models
-    images, prior_poses = dummy_batch
+    images, masks, prior_poses = dummy_batch
 
     weight_before = discriminator.classifier[2].weight.clone()
-    train_step(images, prior_poses, models, optimizers)
+    train_step(images, masks, prior_poses, models, optimizers)
     weight_after = discriminator.classifier[2].weight
 
     assert not torch.allclose(weight_before, weight_after), "Les poids du discriminateur n'ont pas changé"
@@ -157,10 +159,10 @@ def test_discriminator_weights_change_after_step(models, optimizers, dummy_batch
 def test_phi_weights_change_after_step(models, optimizers, dummy_batch):
     """Vérifie que F1 (Phi) apprend bien aussi -- validation finale du mécanisme discuté."""
     phi, omega, lambda_net, discriminator, geo_loop = models
-    images, prior_poses = dummy_batch
+    images, masks, prior_poses = dummy_batch
 
     weight_before = next(phi.parameters()).clone()
-    train_step(images, prior_poses, models, optimizers)
+    train_step(images, masks, prior_poses, models, optimizers)
     weight_after = next(phi.parameters())
 
     assert not torch.allclose(weight_before, weight_after), "Les poids de Phi (F1) n'ont pas changé"

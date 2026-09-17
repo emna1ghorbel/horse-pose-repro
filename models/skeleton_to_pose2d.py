@@ -11,7 +11,8 @@ rétropropagation à travers toute la chaîne).
 
 Entrée  : image squelette (batch, 1, 128, 128)
 Sortie  : coordonnées 2D (batch, K, 2), normalisées dans [-1, 1]
-          K = nombre de points clés (20, cohérent avec le papier)
+          K = nombre de points clés (18, schéma utilisé par le prior et le
+          reste du pipeline)
 """
 import torch
 import torch.nn as nn
@@ -96,7 +97,7 @@ if __name__ == "__main__":
 
     print(f"Entrée  : {dummy_skeleton.shape}")
     print(f"Sortie  : {output.shape}")
-    assert output.shape == (4, 20, 2), "Forme de sortie incorrecte !"
+    assert output.shape == (4, 18, 2), "Forme de sortie incorrecte !"
     assert output.min() >= -1.01 and output.max() <= 1.01, "Coordonnées hors [-1,1] !"
 
     n_params = sum(p.numel() for p in model.parameters())

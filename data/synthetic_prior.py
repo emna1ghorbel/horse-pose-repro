@@ -7,12 +7,12 @@ qui correspondent au schéma d'annotation TigDog.
 
 Ordre des 18 points (cf. README du dépôt officiel, correspondance approximative
 à valider visuellement) :
-    0: left-eye        6: right-back-hoof   12: left-shoulder
-    1: right-eye        7: left-front-knee   13: right-shoulder
-    2: chin              8: right-front-knee  14: left-front-elbow
-    3: left-front-hoof   9: left-back-knee    15: right-front-elbow
-    4: right-front-hoof  10: right-back-knee  16: left-back-elbow
-    5: left-back-hoof    11: (réserve)         17: right-back-elbow
+    0: left-eye          6: right-back-hoof   12: right-shoulder
+    1: right-eye         7: left-front-knee   13: left-front-elbow
+    2: chin              8: right-front-knee  14: right-front-elbow
+    3: left-front-hoof   9: left-back-knee    15: left-back-elbow
+    4: right-front-hoof 10: right-back-knee   16: right-back-elbow
+    5: left-back-hoof   11: left-shoulder     17: point non identifié
 
 Usage :
     python synthetic_prior.py --input-dir ./raw/horse_synthetic/horse_combineds5r5_texture --output-dir ./processed/synthetic_prior
@@ -36,7 +36,7 @@ JOINT_NAMES = [
     "left_front_knee", "right_front_knee", "left_back_knee", "right_back_knee",
     "left_shoulder", "right_shoulder",
     "left_front_elbow", "right_front_elbow", "left_back_elbow", "right_back_elbow",
-    "extra_18th_point",  # à identifier précisément par vérification visuelle
+    "unidentified_point",
 ]
 
 

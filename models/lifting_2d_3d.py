@@ -60,12 +60,12 @@ class Lifting2Dto3D(nn.Module):
 
 if __name__ == "__main__":
     model = Lifting2Dto3D(n_keypoints=18)
-    dummy_pose2d = torch.randn(4, 20, 2)
+    dummy_pose2d = torch.randn(4, 18, 2)
     output = model(dummy_pose2d)
 
     print(f"Entrée  : {dummy_pose2d.shape}")
     print(f"Sortie  : {output.shape}")
-    assert output.shape == (4, 20, 3), "Forme de sortie incorrecte !"
+    assert output.shape == (4, 18, 3), "Forme de sortie incorrecte !"
 
     n_params = sum(p.numel() for p in model.parameters())
     print(f"Nombre de paramètres : {n_params:,}")
@@ -92,7 +92,7 @@ if __name__ == "__main__":
 
     # Vérifie que Lambda est bien réutilisable (même réseau, appelé une 2e fois,
     # comme dans la boucle de cohérence géométrique F4 à venir)
-    pose_2d_bis = torch.randn(4, 20, 2)
+    pose_2d_bis = torch.randn(4, 18, 2)
     pose_3d_bis = model(pose_2d_bis)  # même instance "model", 2e appel
     print(f"  Réutilisation de Lambda (2e appel, même poids) : {pose_3d_bis.shape}")
 
