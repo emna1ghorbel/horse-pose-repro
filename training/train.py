@@ -82,33 +82,33 @@ def render_skeleton_batch(poses_2d: torch.Tensor, size: int = 128, sigma: float 
 
 
 def omega_loss_fn(omega_net, y_pred: torch.Tensor, skeleton_pred: torch.Tensor,
-                   prior_poses: torch.Tensor, lam: float = 1.0) -> torch.Tensor:
+                   prior_poses: torch.Tensor, lam: float = 1.0, sigma: float = 3.0) -> torch.Tensor:
     """
     L_Omega (papier équation 6) :
         L_Omega = ||Omega(beta(p)) - p||^2 + lambda * ||beta(y) - s||^2
     p = poses du prior synthétique (non appariées)
     """
-    beta_p = render_skeleton_batch(prior_poses)
+    beta_p = render_skeleton_batch(prior_poses, sigma=sigma)
     omega_beta_p = omega_net(beta_p)
     term1 = ((omega_beta_p - prior_poses) ** 2).mean()
 
-    beta_y = render_skeleton_batch(y_pred)
+    beta_y = render_skeleton_batch(y_pred, sigma=sigma)
     term2 = ((beta_y - skeleton_pred) ** 2).mean()
 
     return term1 + lam * term2
 
 
-def build_models(n_keypoints: int = 18):
+def build_models(n_keypoints: int = 18, constant_depth: float = 0.0):
     phi = ImageToSkeleton()
     omega = SkeletonToPose2D(n_keypoints=n_keypoints)
-    lambda_net = Lifting2Dto3D(n_keypoints=n_keypoints)
+    lambda_net = Lifting2Dto3D(n_keypoints=n_keypoints, constant_depth=constant_depth)
     discriminator = Discriminator()
     geo_loop = GeometricConsistencyLoop(lambda_net)
     return phi, omega, lambda_net, discriminator, geo_loop
 
 
 def train_step(batch_images, batch_masks, batch_prior_poses, models, optimizers,
-               loss_weights=None, d_freeze_threshold=0.2):
+               loss_weights=None, d_freeze_threshold=0.2, sigma=3.0):
     phi, omega, lambda_net, discriminator, geo_loop = models
     opt_generator, opt_discriminator = optimizers
     loss_weights = loss_weights or {
@@ -124,7 +124,7 @@ def train_step(batch_images, batch_masks, batch_prior_poses, models, optimizers,
     loop_results = geo_loop(v)
 
     # ---- F5 : discriminateur ----
-    w = render_skeleton_batch(batch_prior_poses)  # squelette "réel" depuis le prior
+    w = render_skeleton_batch(batch_prior_poses, sigma=sigma)  # squelette "réel" depuis le prior
     d_score_real = discriminator(w)
     d_score_fake = discriminator(s.detach())
     d_score_fake_for_g = discriminator(s)
@@ -139,8 +139,8 @@ def train_step(batch_images, batch_masks, batch_prior_poses, models, optimizers,
     gc_losses = geometric_consistency_loss(y, v, loop_results)
     loss_gc = gc_losses["L_GC"]
 
-    loss_omega = omega_loss_fn(omega, y, s, batch_prior_poses)
-    loss_div = diversity_loss(s)
+    loss_omega = omega_loss_fn(omega, y, s, batch_prior_poses, sigma=sigma)
+    loss_div = diversity_loss(y)  # Appliqué sur y (Kx2) plutôt que sur s
 
     # Pénalité de fond L1 (pour forcer le squelette à rester dans la silhouette)
     if batch_masks is not None:
@@ -205,14 +205,18 @@ def main():
     parser.add_argument("--detect-anomaly", action="store_true",
                         help="Active le diagnostic autograd lent (debogage seulement)")
     parser.add_argument("--weight-adversarial", type=float, default=1.0)
-    parser.add_argument("--weight-geometric", type=float, default=1.0)
+    parser.add_argument("--weight-geometric", type=float, default=5.0)
     parser.add_argument("--weight-omega", type=float, default=1.0)
     parser.add_argument("--weight-background", type=float, default=1.0)
-    parser.add_argument("--weight-diversity", type=float, default=1.0)
+    parser.add_argument("--weight-diversity", type=float, default=0.1)
     parser.add_argument("--pretrain-omega-epochs", type=int, default=10,
                          help="Nombre d'epochs de pre-entrainement d'Omega seul (defaut: 10)")
     parser.add_argument("--d-freeze-threshold", type=float, default=0.2,
                         help="Seuil de loss_d sous lequel on ne met plus à jour le discriminateur")
+    parser.add_argument("--render-sigma", type=float, default=3.0,
+                        help="Epaisseur des segments gaussiens (defaut: 3.0)")
+    parser.add_argument("--constant-depth", type=float, default=0.0,
+                        help="Profondeur constante d ajoutee par Lambda (defaut: 0.0)")
     args = parser.parse_args()
 
     if min(args.weight_adversarial, args.weight_geometric, args.weight_omega,
@@ -230,7 +234,7 @@ def main():
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     print(f"Device: {device}")
 
-    phi, omega, lambda_net, discriminator, geo_loop = build_models()
+    phi, omega, lambda_net, discriminator, geo_loop = build_models(constant_depth=args.constant_depth)
     phi.to(device); omega.to(device); lambda_net.to(device); discriminator.to(device)
 
     generator_params = list(phi.parameters()) + list(omega.parameters()) + list(lambda_net.parameters())
@@ -283,7 +287,7 @@ def main():
                     prior_indices = torch.randint(len(prior_poses), (args.batch_size,))
                     p_batch = prior_poses[prior_indices].to(device, non_blocking=True)
                 
-                beta_p = render_skeleton_batch(p_batch)
+                beta_p = render_skeleton_batch(p_batch, sigma=args.render_sigma)
                 pred_p = omega(beta_p)
                 loss_pretrain = ((pred_p - p_batch) ** 2).mean()
 
@@ -320,7 +324,8 @@ def main():
                 batch_prior_poses = prior_poses[prior_indices].to(device, non_blocking=True)
 
             losses = train_step(batch_images, batch_masks, batch_prior_poses, models, optimizers,
-                                loss_weights=loss_weights, d_freeze_threshold=args.d_freeze_threshold)
+                                loss_weights=loss_weights, d_freeze_threshold=args.d_freeze_threshold,
+                                sigma=args.render_sigma)
 
             for k, v in losses.items():
                 epoch_losses[k] += v
