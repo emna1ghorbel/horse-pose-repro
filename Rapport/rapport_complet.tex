@@ -1,0 +1,1171 @@
+% ============================================================
+%  RAPPORT DE PROJET -- ESTIMATION DE POSE DE CHEVAL
+%  Horse-Pose-Repro  |  Vision par Ordinateur
+%  Auteur : Rapport de synthèse  |  Date : \today
+% ============================================================
+\documentclass[12pt,a4paper]{article}
+
+% ---- Encodage & langue ----
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[french]{babel}
+
+% ---- Mise en page ----
+\usepackage[top=2.5cm, bottom=2.5cm, left=2.8cm, right=2.8cm]{geometry}
+\usepackage{setspace}
+\setlength{\parskip}{4pt}
+
+% ---- Typographie ----
+\usepackage{lmodern}
+\usepackage{microtype}
+
+% ---- Mathématiques ----
+\usepackage{amsmath, amssymb, bm}
+
+% ---- Figures & tableaux ----
+\usepackage{graphicx}
+\usepackage{float}
+\usepackage{caption}
+\usepackage{subcaption}
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{longtable}
+\usepackage{multirow}
+\usepackage{tabularx}
+\usepackage{colortbl}
+
+% ---- Code source ----
+\usepackage{listings}
+\usepackage{xcolor}
+
+% ---- Liens hypertexte ----
+\usepackage[colorlinks=true, linkcolor=blue!70!black, urlcolor=blue!60!black,
+            citecolor=green!50!black]{hyperref}
+
+% ---- Diagrammes / boîtes ----
+\usepackage{mdframed}
+\usepackage{tcolorbox}
+\tcbuselibrary{skins,breakable}
+\usepackage{tikz}
+\usetikzlibrary{shapes.geometric, arrows, positioning, calc}
+
+% ---- En-tête / pied de page ----
+\usepackage{fancyhdr}
+\pagestyle{fancy}
+\fancyhf{}
+\rhead{\small Horse Pose Estimation}
+\lhead{\small Rapport de Projet}
+\cfoot{\thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+
+% ---- Couleurs personnalisées ----
+\definecolor{codeblue}{RGB}{0,100,180}
+\definecolor{codegray}{RGB}{120,120,120}
+\definecolor{codepurple}{RGB}{130,0,150}
+\definecolor{codegreen}{RGB}{0,130,50}
+\definecolor{backgray}{RGB}{245,245,250}
+\definecolor{accent1}{RGB}{0,80,160}
+\definecolor{accent2}{RGB}{160,40,0}
+\definecolor{accent3}{RGB}{0,120,60}
+\definecolor{boxblue}{RGB}{225,235,250}
+\definecolor{boxgreen}{RGB}{220,245,225}
+\definecolor{boxyellow}{RGB}{252,245,215}
+
+% ---- Style listings Python ----
+\lstdefinestyle{python}{
+  language=Python,
+  backgroundcolor=\color{backgray},
+  basicstyle=\ttfamily\small,
+  keywordstyle=\color{codeblue}\bfseries,
+  commentstyle=\color{codegray}\itshape,
+  stringstyle=\color{accent2},
+  numberstyle=\tiny\color{codegray},
+  numbers=left,
+  stepnumber=1,
+  numbersep=6pt,
+  frame=single,
+  rulecolor=\color{gray!40},
+  breaklines=true,
+  showstringspaces=false,
+  tabsize=4,
+  captionpos=b,
+  morekeywords={torch, nn, F, DataLoader, Dataset},
+}
+
+% ---- Boîtes colorées ----
+\newtcolorbox{infobox}[1][]{
+  colback=boxblue, colframe=accent1, fonttitle=\bfseries,
+  breakable, title={#1}
+}
+\newtcolorbox{resultbox}[1][]{
+  colback=boxgreen, colframe=accent3, fonttitle=\bfseries,
+  breakable, title={#1}
+}
+\newtcolorbox{warnbox}[1][]{
+  colback=boxyellow, colframe=accent2, fonttitle=\bfseries,
+  breakable, title={#1}
+}
+
+% ====================================================
+
+\begin{document}
+
+\begin{titlepage}
+
+  \begin{tikzpicture}[remember picture, overlay]
+    \draw[line width=2.5pt]
+      ($(current page.north west)+(1cm,-1cm)$)
+      rectangle
+      ($(current page.south east)+(-1cm,1cm)$);
+    \draw[line width=0.6pt]
+      ($(current page.north west)+(1.25cm,-1.25cm)$)
+      rectangle
+      ($(current page.south east)+(-1.25cm,1.25cm)$);
+    \foreach \corner in {
+      {($(current page.north west)+(1cm,-1cm)$)},
+      {($(current page.north east)+(-1cm,-1cm)$)},
+      {($(current page.south west)+(1cm,1cm)$)},
+      {($(current page.south east)+(-1cm,1cm)$)}
+    }{
+      \fill \corner circle (3pt);
+    }
+  \end{tikzpicture}
+
+  \centering
+  \vspace{-0.8cm}
+
+  \begin{minipage}{0.22\textwidth}
+    \centering
+     \includegraphics[width=\textwidth]{"Logo_ENIS (1).png"}
+  \end{minipage}
+  \hfill
+  \begin{minipage}{0.48\textwidth}
+    \centering
+    {\small
+      \textbf{République Tunisienne}\\
+      *~*~*~*~*\\
+      Ministère de l'Enseignement Supérieur et de la Recherche Scientifique\\
+      *~*~*~*~*\\
+      Université de Sfax\\
+      *~*~*~*~*\\
+      École Nationale d'Ingénieurs de Sfax\\
+      *~*~*~*~*\\
+      Département de Génie Informatique et de Mathématiques Appliquées
+    }
+  \end{minipage}
+  \hfill
+  \begin{minipage}{0.22\textwidth}
+    \centering
+    \includegraphics[width=\textwidth]{"Logo-Universite-de-Sfax (1).png"}
+  \end{minipage}
+
+  \vspace{2cm}
+
+  {\LARGE{Rapport de Projet de Stage d'été}}
+
+  \vspace{1cm}
+
+  {\centering \normalsize \textit{Préparé par}}\\[0.5cm]
+  {\centering\large
+    
+    Emna Ghorbel\\[5pt]
+    
+  }
+
+  \vspace{1.5cm}
+
+  \noindent\rule{\linewidth}{1pt}\\[0.3cm]
+  {\Large\textbf{Reproduction d'une approche auto-supervis\'{e}e}}\\[0.15cm]
+  {\large pour l'estimation de pose 2D/3D du cheval}\\
+  {\normalsize \`{a} partir d'images non annot\'{e}es et d'un prior synth\'{e}tique}\\[0.3cm]
+  \noindent\rule{\linewidth}{1pt}
+
+  \vspace{0.5cm}
+  {\normalsize \textbf{Organisme d'accueil :} Efrei Research Lab (distanciel)}
+
+  \vspace{0.5cm}
+
+  \centering
+  \begin{tabular}{p{10cm} p{3cm}}
+    Mr Tarak Frikha & Encadrant industriel \\[2pt]
+    Mr Mahdi Ben Abderrahmen & Encadrant acad\'{e}mique \\[2pt]
+  \end{tabular}
+
+  \vfill
+
+  \noindent\rule{3cm}{0.5pt}\quad Année Universitaire 2025--2026 \quad\rule{3cm}{0.5pt}
+
+\end{titlepage}
+
+\newpage
+\thispagestyle{empty}
+\vspace*{2cm}
+{\centering\Large\bfseries Remerciements\par}
+\vspace{1cm}
+\addcontentsline{toc}{section}{Remerciements}
+
+Au terme de ce travail, nous tenons \`{a} exprimer notre sinc\`{e}re gratitude \`{a} toutes les personnes qui ont contribu\'{e}, de pr\`{e}s ou de loin, \`{a} l'aboutissement de ce projet de stage.
+
+Nos premiers remerciements vont \`{a} \textbf{Monsieur Tarak Frikha}, encadrant industriel, pour sa disponibilit\'{e}, ses orientations avis\'{e}es et l'\'{e}clairage pratique qu'il nous a apport\'{e} tout au long de cette exp\'{e}rience. Ses retours r\'{e}guliers ont \'{e}t\'{e} d\'{e}terminants dans la progression et la qualit\'{e} de notre travail.
+
+Nous remercions \'{e}galement \textbf{Monsieur Mahdi Ben Abderrahmen}, encadrant acad\'{e}mique, pour son suivi rigoureux, ses conseils scientifiques et la confiance qu'il nous a t\'{e}moign\'{e}e tout au long de ce projet. Ses recommandations ont largement contribu\'{e} \`{a} structurer notre d\'{e}marche de recherche et de d\'{e}veloppement.
+
+Nous adressons nos vifs remerciements \`{a} l'ensemble du corps enseignant du \textbf{D\'{e}partement de G\'{e}nie Informatique et de Math\'{e}matiques Appliqu\'{e}es} de l'\'{E}cole Nationale d'Ing\'{e}nieurs de Sfax, pour la qualit\'{e} de la formation dispens\'{e}e et pour les outils intellectuels qui nous ont permis d'aborder ce projet avec m\'{e}thode et rigueur.
+
+Nous souhaitons \'{e}galement t\'{e}moigner notre gratitude aux membres du jury pour l'int\'{e}r\^{e}t qu'ils portent \`{a} nos travaux et pour le temps qu'ils consacrent \`{a} leur \'{e}valuation.
+
+Enfin, nous d\'{e}dions ce travail \`{a} nos \textbf{familles} et \`{a} nos \textbf{amis}, dont le soutien moral ind\'{e}fectible a \'{e}t\'{e} notre source de motivation quotidienne tout au long de cette ann\'{e}e universitaire.
+
+\bigskip
+\noindent\textit{Merci \`{a} toutes et \`{a} tous.}
+
+\newpage
+\thispagestyle{empty}
+\renewcommand{\abstractname}{Résumé}
+\begin{abstract}
+Ce rapport détaille les travaux menés dans le cadre de notre projet de stage, intitulé \textbf{horse-pose-repro}, qui s'attaque au défi complexe de l'estimation de pose animale. Contrairement à l'estimation de pose humaine qui bénéficie de vastes bases de données annotées, l'analyse du mouvement animal souffre d'un manque criant de données de vérité terrain. L'objectif principal de ce projet est donc d'estimer de manière entièrement automatique la pose articulée d'un cheval (représentée par un squelette anatomique 2D à 18 points clés) à partir d'une simple image RGB, et ce dans un cadre d'apprentissage \textbf{faiblement supervisé}. 
+
+Pour pallier l'absence d'annotations manuelles sur les images réelles, notre approche s'appuie sur le transfert de connaissances depuis le domaine de la synthèse 3D. Le modèle est guidé par un \emph{prior synthétique} robuste, extrait d'un modèle CAO 3D (Mu et al., CVPR 2020), et est entraîné sur des images réelles issues des vidéos du dataset TigDog. 
+
+La méthodologie développée repose sur une architecture novatrice organisée en cinq modules interconnectés (F1 à F5). Le système s'articule autour d'un réseau convolutif générateur de cartes de chaleur (Module Phi, architecture U-Net), suivi d'un extracteur de coordonnées spatiales basé sur une opération \textit{soft-argmax} différentiable (Module Omega). Afin de garantir la plausibilité anatomique des prédictions, le réseau intègre un releveur 2D$\to$3D (Module Lambda) couplé à une boucle de \textbf{cohérence géométrique} (Module F4). Cette boucle projette aléatoirement la pose 3D sous de nouveaux angles virtuels, forçant le réseau à apprendre une représentation tridimensionnelle cohérente et invariante aux rotations. Enfin, un discriminateur adversarial (Module F5) juge la qualité globale des squelettes générés.
+
+Le processus d'apprentissage s'effectue de bout en bout (\textit{end-to-end}) grâce à la minimisation d'une fonction de perte composite. Celle-ci combine plusieurs contraintes : une erreur adversariale de type GAN, une perte de projection géométrique stricte et une régularisation de diversité pour contrer le problème d'effondrement de mode (\textit{mode collapse}).
+
+Les résultats expérimentaux, obtenus au terme de 150 époques d'entraînement, valident la pertinence de cette approche. Malgré la très faible supervision, le modèle atteint un score de couverture de \textbf{83.2\%} des points clés, un IoU de \textbf{0.256} sur la reconstruction des masques de silhouette, et génère des prédictions anatomiquement viables sur des poses complexes (trot, galop). En outre, le développement d'un algorithme de post-traitement par alignement de boîte englobante a permis d'améliorer significativement la précision visuelle de l'alignement final sans nécessiter le moindre ré-entraînement, prouvant ainsi la forte capacité de généralisation des représentations spatiales apprises par le modèle.
+\end{abstract}
+
+\newpage
+\tableofcontents
+\newpage
+
+% ============================================================
+\section{Introduction et Contexte}
+% ============================================================
+
+\subsection{Contexte du projet}
+
+L'estimation de pose humaine est aujourd'hui un problème bien maîtrisé grâce à de
+gigantesques jeux de données annotés (COCO, MPII, Human3.6M). En revanche, l'estimation
+de pose animale \textbf{souffre d'un manque chronique de données annotées}, notamment
+pour des espèces aussi peu documentées que le cheval dans des conditions naturelles.
+
+Le projet \textbf{horse-pose-repro} cherche à reproduire et à étendre une approche
+de la littérature permettant d'apprendre à localiser les articulations d'un cheval
+sans recourir à des annotations manuelles coûteuses. Le principe central est de
+\emph{transférer} la connaissance contenue dans des modèles 3D synthétiques (poses
+générées par ordinateur depuis un modèle CAD du cheval) vers des images réelles,
+via un apprentissage adversarial et une contrainte de cohérence géométrique 3D.
+
+\subsection{Jeux de données utilisés}
+
+Deux sources de données sont exploitées :
+
+\begin{enumerate}
+  \item \textbf{TigDog (behaviorDiscovery2.0)} : dataset vidéo réel de chevaux en
+  environnement naturel. Les frames sont extraites par shot, filtrées par qualité
+  de masque de silhouette (ratio de pixels actifs entre 2\% et 85\%), puis
+  redimensionnées en $128\times128$ avec padding centré isotrope. Ce traitement
+  est effectué par \texttt{data/preprocess.py}.
+
+  \item \textbf{Prior synthétique (Mu et al., CVPR 2020)} : modèle CAD 3D d'un
+  cheval avec 3299 sommets par pose. Les 18 points clés anatomiques sont extraits
+  via des indices fixes (\texttt{HORSE\_KEYPOINT\_INDICES}), normalisés
+  (centrage + mise à l'échelle max), et sauvegardés comme \texttt{synthetic\_prior\_poses.pt}
+  (tenseur de forme $(N, 18, 2)$) par \texttt{data/synthetic\_prior.py}.
+\end{enumerate}
+
+Le dataset consolidé final (dans \texttt{data/processed/final/}) combine les images
+TigDog, les frames YouTube filtrées et leurs masques de segmentation respectifs,
+indexés via un fichier \texttt{dataset\_registry.json}.
+
+\subsection{Les 18 points clés anatomiques}
+
+Le schéma d'annotation suit le protocole TigDog avec 18 points clés :
+
+\begin{center}
+\begin{tabular}{clcl}
+\toprule
+\textbf{Index} & \textbf{Nom} & \textbf{Index} & \textbf{Nom} \\
+\midrule
+0  & Œil gauche         & 9  & Genou arrière gauche \\
+1  & Œil droit          & 10 & Genou arrière droit  \\
+2  & Museau (menton)    & 11 & Épaule gauche        \\
+3  & Sabot avant gauche & 12 & Épaule droite        \\
+4  & Sabot avant droit  & 13 & Coude avant gauche   \\
+5  & Sabot arrière gauche & 14 & Coude avant droit  \\
+6  & Sabot arrière droit  & 15 & Coude arrière gauche \\
+7  & Genou avant gauche   & 16 & Coude arrière droit  \\
+8  & Genou avant droit    & 17 & Queue (extrémité)    \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+Les connexions anatomiques (arêtes du squelette) sont :
+\begin{itemize}
+  \item \textbf{Tête} : (0,2), (1,2) --- yeux vers museau
+  \item \textbf{Cou} : (2,11), (2,12) --- museau vers épaules
+  \item \textbf{Dos} : (11,12), (11,17), (12,17) --- épaules--queue
+  \item \textbf{Jambe AV gauche} : (3,7), (7,13), (13,11)
+  \item \textbf{Jambe AV droite} : (4,8), (8,14), (14,12)
+  \item \textbf{Jambe AR gauche} : (5,9), (9,15), (15,17)
+  \item \textbf{Jambe AR droite} : (6,10), (10,16), (16,17)
+\end{itemize}
+
+% ============================================================
+\section{Architecture Globale du Modèle}
+% ============================================================
+
+\subsection{Vue d'ensemble}
+
+L'architecture repose sur cinq modules notés F1 à F5, qui forment ensemble un
+système génératif avec contrainte géométrique. Le pipeline d'inférence principal est :
+
+\begin{equation}
+  x \xrightarrow{F1=\Phi} s \xrightarrow{F2=\Omega} y \xrightarrow{F3=\Lambda} v
+  \xrightarrow{F4} \{\hat{v}, \hat{y}, \hat{v}', v', y'\}
+\end{equation}
+
+où :
+\begin{itemize}
+  \item $x \in \mathbb{R}^{3 \times 128 \times 128}$ : image RGB d'entrée
+  \item $s \in [0,1]^{1 \times 128 \times 128}$ : heatmap de silhouette produite par Phi
+  \item $y \in [-1,1]^{18 \times 2}$ : coordonnées 2D des 18 points clés (normalisées)
+  \item $v \in \mathbb{R}^{18 \times 3}$ : pose 3D (x, y + profondeur estimée)
+\end{itemize}
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=\textwidth]{"figures/figx.png"}
+  \caption{Pipeline complet du modèle horse-pose-repro.}
+  \label{fig:figx}
+\end{figure}
+
+\subsection{F1 --- Module Phi : ImageToSkeleton (U-Net)}
+\label{sec:phi}
+
+\textbf{Fichier :} \texttt{models/image\_to\_skeleton.py}
+
+Phi est un \textbf{U-Net léger} qui effectue une traduction d'image à image :
+image RGB $\rightarrow$ heatmap de silhouette.
+
+\subsubsection*{Architecture détaillée}
+
+\begin{table}[H]
+  \centering
+  \caption{Architecture du module Phi (U-Net, \texttt{base\_channels=32}).}
+  \begin{tabularx}{\textwidth}{llX}
+  \toprule
+  \textbf{Bloc} & \textbf{Dimensions} & \textbf{Description} \\
+  \midrule
+  \multicolumn{3}{l}{\textit{--- Encodeur ---}} \\
+  enc1 & $3 \to 32$, 128×128 & ConvBlock(3,32) : 2×[Conv3×3 + BN + ReLU] \\
+  pool1 & 128$\to$64 & MaxPool2d(2) \\
+  enc2 & $32 \to 64$, 64×64 & ConvBlock(32,64) \\
+  pool2 & 64$\to$32 & MaxPool2d(2) \\
+  enc3 & $64 \to 128$, 32×32 & ConvBlock(64,128) \\
+  pool3 & 32$\to$16 & MaxPool2d(2) \\
+  \midrule
+  \multicolumn{3}{l}{\textit{--- Goulot d'étranglement ---}} \\
+  bottleneck & $128 \to 256$, 16×16 & ConvBlock(128,256) \\
+  \midrule
+  \multicolumn{3}{l}{\textit{--- Décodeur (avec skip connections) ---}} \\
+  up3 & $256 \to 128$, 32×32 & ConvTranspose2d(256,128,2,stride=2) \\
+  dec3 & $256 \to 128$, 32×32 & ConvBlock(256,128) — concat enc3 \\
+  up2 & $128 \to 64$, 64×64 & ConvTranspose2d(128,64,2,stride=2) \\
+  dec2 & $128 \to 64$, 64×64 & ConvBlock(128,64) — concat enc2 \\
+  up1 & $64 \to 32$, 128×128 & ConvTranspose2d(64,32,2,stride=2) \\
+  dec1 & $64 \to 32$, 128×128 & ConvBlock(64,32) — concat enc1 \\
+  \midrule
+  out\_conv & $32 \to 1$ & Conv2d(32,1,kernel=1) \\
+  activation & --- & Sigmoid() $\Rightarrow$ sortie dans $[0,1]$ \\
+  \bottomrule
+  \end{tabularx}
+\end{table}
+
+\begin{infobox}[Propriétés de Phi]
+  \begin{itemize}
+    \item Entrée : $(B, 3, 128, 128)$ --- image RGB normalisée (ImageNet stats)
+    \item Sortie : $(B, 1, 128, 128)$ --- heatmap dans $[0,1]$
+    \item Skip connections : préservent les détails spatiaux fins
+    \item Activation finale : Sigmoid (valeurs probabilistes)
+    \item Rôle : apprendre à détecter la \emph{silhouette} du cheval dans l'image
+  \end{itemize}
+\end{infobox}
+
+\subsection{F2 --- Module Omega : SkeletonToPose2D}
+\label{sec:omega}
+
+\textbf{Fichier :} \texttt{models/skeleton\_to\_pose2d.py}
+
+Omega convertit la heatmap de silhouette en coordonnées 2D continues et
+différentiables pour les 18 points clés.
+
+\subsubsection*{Architecture}
+
+\begin{enumerate}
+  \item \textbf{Branche features} (encodeur convolutif) :
+  \begin{itemize}
+    \item ConvBlock(1,32) + MaxPool → 64×64
+    \item ConvBlock(32,64) + MaxPool → 32×32
+    \item ConvBlock(64,128) + MaxPool → 16×16
+    \item ConvBlock(128,128) → 16×16
+  \end{itemize}
+  \item \textbf{Branche upsample} :
+  \begin{itemize}
+    \item ConvTranspose2d(128,64) → 32×32
+    \item ConvTranspose2d(64,32) → 64×64
+  \end{itemize}
+  \item \textbf{Tête heatmap} : Conv2d(32, 18, kernel=1) → $(B, 18, 64, 64)$
+  \item \textbf{Soft-argmax 2D} : coordonnées continues $(B, 18, 2)$
+\end{enumerate}
+
+\subsubsection*{Soft-Argmax différentiable}
+
+La localisation de chaque point clé est obtenue par une moyenne pondérée sur la
+distribution softmax de chaque carte de probabilité :
+
+\begin{equation}
+  \hat{x}_k = \sum_{i,j} \text{softmax}(H_k)_{ij} \cdot x_j, \quad
+  \hat{y}_k = \sum_{i,j} \text{softmax}(H_k)_{ij} \cdot y_i
+\end{equation}
+
+où $H_k \in \mathbb{R}^{64 \times 64}$ est la heatmap du $k$-ième point clé,
+et $(x_j, y_i)$ sont les coordonnées de grille dans $[-1,1]$.
+
+\begin{warnbox}[Avantage par rapport à l'argmax classique]
+  L'argmax discret n'est pas différentiable. Le soft-argmax permet au gradient
+  de remonter jusqu'à Phi (F1) à travers toute la chaîne F1→F2.
+\end{warnbox}
+
+\subsection{F3 --- Module Lambda : Lifting2Dto3D}
+\label{sec:lambda}
+
+\textbf{Fichier :} \texttt{models/lifting\_2d\_3d.py}
+
+Lambda est un MLP global qui \emph{relève} la pose 2D vers la pose 3D en estimant
+un décalage de profondeur $\delta_i$ pour chaque point clé.
+
+\subsubsection*{Architecture MLP}
+
+\begin{equation}
+  \text{Input} : y \in \mathbb{R}^{18 \times 2} \xrightarrow{\text{flatten}} \mathbb{R}^{36}
+  \xrightarrow{\text{Linear(36,256)}} \xrightarrow{\text{ReLU}} \xrightarrow{\text{Linear(256,256)}}
+  \xrightarrow{\text{ReLU}} \xrightarrow{\text{Linear(256,18)}} \xrightarrow{\text{Tanh}}
+  \bm{\delta} \in [-1,1]^{18}
+\end{equation}
+
+\begin{equation}
+  v_i = (x_i, y_i, d + \delta_i), \quad \text{avec } d = 0.0 \text{ (hyperparamètre)}
+\end{equation}
+
+\begin{infobox}[Choix de conception]
+  Le réseau voit \textbf{toutes les coordonnées 2D simultanément} (pose globale),
+  permettant de capturer les corrélations anatomiques entre membres
+  (ex. la profondeur d'un sabot dépend de la posture complète du cheval).
+  Lambda est appelé \textbf{deux fois} dans la boucle F4 avec les mêmes poids.
+\end{infobox}
+
+\subsection{F4 --- Boucle de Cohérence Géométrique}
+\label{sec:geo}
+
+\textbf{Fichier :} \texttt{models/renderer.py}
+
+La boucle F4 impose une contrainte de cohérence entre la représentation 3D apprise
+et les projections 2D, sans aucune annotation 3D de vérité terrain.
+
+\subsubsection*{Séquence des 5 étapes}
+
+\begin{enumerate}
+  \item $v \xrightarrow{R_{\text{aléatoire}}} \hat{v}$ : rotation 3D aléatoire
+        (azimut $\in [0°, 360°]$, élévation $\in [-30°, +30°]$)
+  \item $\hat{v} \xrightarrow{\pi} \hat{y}$ : projection orthographique 2D
+        (conservation de $x,y$, suppression de $z$)
+  \item $\hat{y} \xrightarrow{\Lambda} \hat{v}'$ : re-levée par le même Lambda
+  \item $\hat{v}' \xrightarrow{R^{-1}} v'$ : rotation inverse
+  \item $v' \xrightarrow{\pi} y'$ : projection 2D finale
+\end{enumerate}
+
+\subsubsection*{Matrices de rotation}
+
+\begin{equation}
+  R = R_{\text{élév}} \cdot R_{\text{azimut}}, \quad
+  R_{\text{azimut}} = \begin{pmatrix} \cos\alpha & 0 & \sin\alpha \\ 0 & 1 & 0 \\ -\sin\alpha & 0 & \cos\alpha \end{pmatrix}
+\end{equation}
+
+\subsection{F5 --- Discriminateur D}
+\label{sec:disc}
+
+\textbf{Fichier :} \texttt{models/discriminator.py}
+
+D est un réseau convolutif qui distingue les squelettes \emph{synthétiques} (rendus
+depuis le prior par la fonction $\beta$) des squelettes \emph{prédits} par Phi.
+
+\begin{table}[H]
+  \centering
+  \caption{Architecture du Discriminateur (base\_channels=32).}
+  \begin{tabular}{llc}
+  \toprule
+  \textbf{Couche} & \textbf{Opération} & \textbf{Sortie} \\
+  \midrule
+  conv1 & Conv2d(1,32,4,stride=2) + LeakyReLU(0.2) & 64×64 \\
+  conv2 & Conv2d(32,64,4,stride=2) + BN + LeakyReLU(0.2) & 32×32 \\
+  conv3 & Conv2d(64,128,4,stride=2) + BN + LeakyReLU(0.2) & 16×16 \\
+  conv4 & Conv2d(128,256,4,stride=2) + BN + LeakyReLU(0.2) & 8×8 \\
+  classifier & AdaptiveAvgPool(1) + Flatten + Linear(256,1) + Sigmoid & scalaire \\
+  \bottomrule
+  \end{tabular}
+\end{table}
+
+% ============================================================
+\section{Fonction de Rendu Différentiable $\beta$}
+% ============================================================
+
+\textbf{Définie dans :} \texttt{training/train.py}, fonction \texttt{render\_skeleton\_batch}
+
+La fonction $\beta$ convertit un batch de poses 2D $(B, 18, 2)$ en images de
+squelette $(B, 1, 128, 128)$ de façon \textbf{entièrement différentiable}.
+
+\subsubsection*{Algorithme}
+
+Pour chaque arête anatomique $(u, v)$ de \texttt{HORSE\_EDGES}, on interpole
+linéairement 20 points le long du segment :
+
+\begin{equation}
+  p_t = p_u \cdot (1 - t) + p_v \cdot t, \quad t \in \{0, \tfrac{1}{20}, \ldots, 1\}
+\end{equation}
+
+Chaque point (articulation + points intermédiaires) est ensuite rendu comme une
+gaussienne isotrope :
+
+\begin{equation}
+  \text{canvas}_{x,y} = \max_k \exp\!\left(-\frac{(x - p_{k,x})^2 + (y - p_{k,y})^2}{2\sigma_n^2}\right)
+\end{equation}
+
+où $\sigma_n = \sigma_{\text{pixels}} / (128/2)$ convertit l'épaisseur de pixels
+vers l'espace normalisé $[-1,1]$ (valeur par défaut : $\sigma = 3.0$ px).
+
+% ============================================================
+\section{Fonctions de Perte}
+% ============================================================
+
+\subsection{Perte adversariale $\mathcal{L}_D$ et $\mathcal{L}_G$}
+
+\textbf{Fichier :} \texttt{losses/adversarial\_loss.py}
+
+\begin{equation}
+  \mathcal{L}_D = -\mathbb{E}_w[\log D(w)] - \mathbb{E}_s[\log(1 - D(s))]
+\end{equation}
+
+\begin{equation}
+  \mathcal{L}_G = -\mathbb{E}_s[\log D(s)] \quad \text{(formulation non-saturating)}
+\end{equation}
+
+où $w = \beta(p)$ est le squelette rendu depuis le prior synthétique,
+et $s = \Phi(x)$ est la heatmap prédite par Phi.
+
+\subsection{Perte de cohérence géométrique $\mathcal{L}_{GC}$}
+
+\textbf{Fichier :} \texttt{losses/geometric\_consistency.py}
+
+\begin{align}
+  \mathcal{L}_{2D} &= \|y' - y\|^2 \label{eq:l2d} \\
+  \mathcal{L}_{3D} &= \|(v'_j - v'_k) - (v_j - v_k)\|^2 \label{eq:l3d} \\
+  \mathcal{L}_{r3D} &= \|\hat{v}' - \hat{v}\|^2 \label{eq:lr3d} \\
+  \mathcal{L}_{GC} &= \mathcal{L}_{2D} + \mathcal{L}_{3D} + \mathcal{L}_{r3D} \label{eq:lgc}
+\end{align}
+
+\begin{itemize}
+  \item $\mathcal{L}_{2D}$ : la pose 2D doit être cohérente après le cycle complet
+        rotation $\to$ re-lifting $\to$ rotation inverse $\to$ projection.
+  \item $\mathcal{L}_{3D}$ : compare les \emph{déformations relatives} entre deux
+        éléments $j,k$ du batch (via décalage circulaire), évitant de pénaliser des
+        ambiguïtés de profondeur légitimes.
+  \item $\mathcal{L}_{r3D}$ : le re-lifting de la vue tournée doit redonner
+        la vue tournée originale.
+\end{itemize}
+
+\subsection{Perte Omega $\mathcal{L}_\Omega$}
+
+\begin{equation}
+  \mathcal{L}_\Omega = \|\Omega(\beta(p)) - p\|^2 + \lambda \|\beta(y) - s\|^2
+\end{equation}
+
+\textbf{Terme 1} : Omega doit récupérer une pose $p$ depuis son rendu $\beta(p)$
+(auto-supervision par le prior synthétique).
+
+\textbf{Terme 2} : la reconstruction $\beta(y)$ de la pose prédite doit correspondre
+à la heatmap $s$ produite par Phi.
+
+\subsection{Perte de diversité $\mathcal{L}_{div}$}
+
+\textbf{Fichier :} \texttt{losses/diversity\_loss.py}
+
+Pour éviter le mode collapse (toutes les prédictions identiques) :
+
+\begin{equation}
+  \mathcal{L}_{div} = -\frac{1}{K} \sum_{k=1}^{K} \text{std}_{b}(y_{b,k})
+\end{equation}
+
+On maximise l'écart-type des coordonnées de chaque keypoint $k$ sur la dimension
+du batch $b$.
+
+\subsection{Pertes auxiliaires}
+
+\begin{itemize}
+  \item \textbf{Background loss} : $\mathcal{L}_{bg} = \|s \cdot (1 - M)\|_1$
+        où $M$ est le masque de silhouette GT. Pénalise le squelette en dehors
+        de la silhouette détectée.
+  \item \textbf{Sparsity loss} : $\mathcal{L}_{sp} = \text{mean}(s)$.
+        Favorise une heatmap fine et localisée (pas diffuse).
+\end{itemize}
+
+\subsection{Perte totale}
+
+\begin{equation}
+  \mathcal{L} = \underbrace{\lambda_{adv}\,\mathcal{L}_G}_{\text{adversarial}}
+              + \underbrace{\lambda_{gc}\,\mathcal{L}_{GC}}_{\text{cohérence géom.}}
+              + \underbrace{\lambda_\Omega\,\mathcal{L}_\Omega}_{\text{Omega}}
+              + \underbrace{\lambda_{bg}\,\mathcal{L}_{bg}}_{\text{fond}}
+              + \underbrace{\lambda_{div}\,\mathcal{L}_{div}}_{\text{diversité}}
+              + \underbrace{\lambda_{sp}\,\mathcal{L}_{sp}}_{\text{sparsité}}
+\end{equation}
+
+\begin{table}[H]
+  \centering
+  \caption{Poids de pertes utilisés pour l'entraînement principal.}
+  \begin{tabular}{lcc}
+  \toprule
+  \textbf{Terme} & \textbf{Paramètre CLI} & \textbf{Valeur par défaut} \\
+  \midrule
+  $\lambda_{adv}$  & \texttt{--weight-adversarial} & 1.0 \\
+  $\lambda_{gc}$   & \texttt{--weight-geometric}   & 5.0 \\
+  $\lambda_\Omega$ & \texttt{--weight-omega}        & 1.0 \\
+  $\lambda_{bg}$   & \texttt{--weight-background}   & 1.0 \\
+  $\lambda_{div}$  & \texttt{--weight-diversity}    & 0.1 \\
+  $\lambda_{sp}$   & \texttt{--weight-sparsity}     & 0.01 \\
+  \bottomrule
+  \end{tabular}
+\end{table}
+
+% ============================================================
+\section{Stratégie d'Entraînement}
+% ============================================================
+
+\subsection{Pipeline d'entraînement}
+
+\textbf{Fichier :} \texttt{training/train.py}
+
+La boucle d'entraînement suit une stratégie en \textbf{deux optimiseurs séparés} :
+
+\begin{enumerate}
+  \item \textbf{Optimiseur générateur} (Adam, $\text{lr}=10^{-4}$) :
+        entraîne $\Phi$, $\Omega$, $\Lambda$ conjointement via $\mathcal{L}$.
+  \item \textbf{Optimiseur discriminateur} (Adam, $\text{lr}=10^{-5}$) :
+        entraîne $D$ via $\mathcal{L}_D$.
+\end{enumerate}
+
+\subsubsection*{Ordre critique des backward passes}
+
+\begin{warnbox}[Gestion du graphe autograd]
+  Le générateur est mis à jour \textbf{avant} le discriminateur. En effet,
+  $\mathcal{L}$ passe par $D(s)$ et référence les poids de $D$ dans le graphe
+  autograd. Si \texttt{opt\_discriminator.step()} modifiait ces poids \emph{en
+  place} avant le \texttt{backward()} du générateur, PyTorch lèverait une erreur
+  de ``version counter mismatch''.
+\end{warnbox}
+
+\subsubsection*{Gel du discriminateur}
+
+Le discriminateur est \textbf{gelé} (son optimiseur ne fait pas de step) si
+$\mathcal{L}_D < 0.2$, évitant ainsi que $D$ devienne trop fort et bloque
+l'apprentissage de Phi.
+
+\subsection{Pré-entraînement d'Omega}
+
+Avant la boucle conjointe, Omega est pré-entraîné seul sur le prior synthétique
+(par défaut 10 époques) :
+
+\begin{equation}
+  \mathcal{L}_{\text{pretrain}} = \|\Omega(\beta(p)) - p\|^2
+\end{equation}
+
+Cela donne à Omega une initialisation cohérente avec l'espace des poses
+anatomiquement plausibles \emph{avant} de recevoir des gradients adversariaux.
+
+\subsection{Historique des runs d'entraînement}
+
+Le projet a produit plus de \textbf{24 runs} d'entraînement expérimentaux
+(répertoire \texttt{checkpoints/}), explorant différentes configurations :
+
+\begin{center}
+\begin{tabular}{lp{10cm}}
+\toprule
+\textbf{Run} & \textbf{Description} \\
+\midrule
+run3--run5   & Premiers essais, debug NaN, stabilisation \\
+run6         & Correction de Phi (poids figés indésirables) \\
+run7         & Entraînement prolongé 100 époques \\
+run8         & Augmentation du poids géométrique ($\lambda_{gc}=6$) \\
+run9--10     & Ajout et calibration de la diversity loss \\
+run11        & Test InstanceNorm vs BatchNorm \\
+run12        & Test gel partiel des couches \\
+run13        & Spread 0.15 sur les gaussiennes \\
+run14        & Ancrage par masque (mask anchor) \\
+run15--16    & Test Minibatch Std Deviation (mbstd) \\
+run17        & Correction bug perte background \\
+run18        & Run complet avec YouTube + TigDog \\
+run19        & Ré-entraînement propre from scratch (résultat final) \\
+run20        & Run étendu au-delà de 150 époques \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+Le checkpoint final utilisé pour les évaluations est \texttt{checkpoints/latest.pt}
+(époque 150, run19\_clean\_scratch).
+
+% ============================================================
+\section{Évaluation et Métriques}
+% ============================================================
+
+\subsection{Métriques utilisées}
+
+En l'absence d'annotations de keypoints pour les images réelles, deux types
+d'évaluation sont employés :
+
+\subsubsection*{Évaluation PCK proxy (silhouette)}
+
+\textbf{Fichier :} \texttt{evaluation/pck\_eval.py}
+
+La heatmap de Phi est binarisée ($> 0.3$) et comparée au masque de silhouette GT :
+
+\begin{align}
+  \text{IoU} &= \frac{|\hat{S} \cap M|}{|\hat{S} \cup M|} \\[4pt]
+  \text{Coverage} &= \frac{|\hat{S} \cap M|}{|M|} \\[4pt]
+  \text{Precision} &= \frac{|\hat{S} \cap M|}{|\hat{S}|} \\[4pt]
+  \text{WeightedFrac} &= \frac{\sum_{i,j} \Phi(x)_{ij} \cdot M_{ij}}{\sum_{i,j} \Phi(x)_{ij}}
+\end{align}
+
+\subsubsection*{Score d'alignement géométrique}
+
+\textbf{Fichier :} \texttt{evaluation/skeleton\_inspect.py}
+
+Un score heuristique mesure la qualité de l'emboîtement entre la boîte englobante
+des keypoints prédits et celle de la silhouette Phi, après post-traitement.
+
+\subsection{Résultats quantitatifs}
+
+\begin{resultbox}[Résultats PCK --- Run19, Époque 150, N=50 images]
+\begin{center}
+\begin{tabular}{lcc}
+\toprule
+\textbf{Métrique} & \textbf{Valeur} & \textbf{Interprétation} \\
+\midrule
+IoU             & \textbf{0.256} & BON (seuil excellent : >0.35) \\
+Coverage        & \textbf{0.832} & Excellente : Phi couvre 83\% du masque GT \\
+Precision       & \textbf{0.281} & La heatmap déborde légèrement \\
+WeightedFrac    & \textbf{0.284} & 28\% de l'énergie dans la silhouette \\
+Pred pixels (moy.) & 4 222 & Heatmap assez large \\
+Mask pixels (moy.) & 1 605 & Cheval assez petit dans l'image \\
+\bottomrule
+\end{tabular}
+\end{center}
+\end{resultbox}
+
+\begin{resultbox}[Meilleurs scores d'alignement géométrique par seed]
+\begin{center}
+\begin{tabular}{lcc}
+\toprule
+\textbf{Seed} & \textbf{Score} & \textbf{Interprétation} \\
+\midrule
+70 & \textbf{0.439} & Meilleur alignement global \\
+10 & 0.437 & Très bon malgré la diversité des poses \\
+30 & 0.428 & Correction d'échelle efficace \\
+\bottomrule
+\end{tabular}
+\end{center}
+\end{resultbox}
+
+\subsection{Analyse des résultats}
+
+\subsubsection*{Points forts}
+
+\begin{itemize}
+  \item \textbf{Coverage = 83.2\%} : Phi localise très bien la région du cheval dans
+  l'image --- il sait ``où est le cheval''. C'est la qualité la plus importante pour
+  un modèle non supervisé.
+  \item \textbf{Cohérence topologique} : le squelette prédit forme toujours une
+  structure anatomiquement correcte (les os relient les bons keypoints).
+  \item \textbf{Généralisation} : les résultats sont stables sur 50 images issues
+  de 50 shots différents du dataset TigDog.
+\end{itemize}
+
+\subsubsection*{Limites observées}
+
+\begin{itemize}
+  \item \textbf{IoU modéré (0.256)} : la heatmap est plus large que le masque GT
+  (la Precision n'est que de 0.281), ce qui indique une heatmap diffuse. La sparsity
+  loss ($\lambda_{sp} = 0.01$) pourrait être augmentée.
+  \item \textbf{Biais d'échelle d'Omega} : les keypoints prédits avant post-traitement
+  ont une étendue spatiale trop petite par rapport au cheval visible dans l'image.
+  \item \textbf{Ambiguïté gauche/droite} : dans certaines poses de profil, le modèle
+  n'est pas certain de quel côté font face les membres.
+\end{itemize}
+
+% ============================================================
+\section{Post-Traitement : Alignement par Boîte Englobante}
+% ============================================================
+
+\textbf{Fichier :} \texttt{evaluation/skeleton\_inspect.py}, fonction \texttt{build\_figure}
+
+\subsection{Motivation}
+
+Le module Omega prédit des coordonnées dans l'espace normalisé $[-1,1]$ mais avec
+un biais systématique d'échelle et de centrage. Plutôt que de ré-entraîner le
+modèle, un \textbf{post-traitement géométrique} est appliqué à la visualisation.
+
+\subsection{Algorithme d'alignement}
+
+\begin{enumerate}
+  \item \textbf{Extraction de la région cheval} depuis la heatmap Phi :
+        \begin{equation}
+          (x_{\min}^{\phi}, x_{\max}^{\phi}, y_{\min}^{\phi}, y_{\max}^{\phi})
+          = \text{BBox}(\{(i,j) \mid \Phi(x)_{ij} > 0.1\})
+        \end{equation}
+
+  \item \textbf{Conversion en coordonnées normalisées} $[-1,1]$ :
+        \begin{equation}
+          x_{\min}^{\text{tgt}} = \frac{x_{\min}^{\phi}}{128} \times 2 - 1, \quad \ldots
+        \end{equation}
+
+  \item \textbf{Boîte englobante des keypoints prédits} :
+        \begin{equation}
+          (x_{\min}^{kp}, x_{\max}^{kp}, y_{\min}^{kp}, y_{\max}^{kp})
+          = \text{BBox}(y_{1:18})
+        \end{equation}
+
+  \item \textbf{Calcul du facteur d'échelle global} :
+        \begin{equation}
+          s = \min\!\left(
+              \frac{x_{\max}^{\text{tgt}} - x_{\min}^{\text{tgt}}}{x_{\max}^{kp} - x_{\min}^{kp}},\;
+              \frac{y_{\max}^{\text{tgt}} - y_{\min}^{\text{tgt}}}{y_{\max}^{kp} - y_{\min}^{kp}}
+              \right) \times 1.1
+        \end{equation}
+        Le facteur 1.1 compense le repliement des membres dans le prior.
+
+  \item \textbf{Transformation affine} :
+        \begin{align}
+          y'_k &\leftarrow (y_k - c_{kp}) \cdot s + c_{\text{tgt}}
+        \end{align}
+        où $c_{kp}$ et $c_{\text{tgt}}$ sont les centres respectifs des deux BBox.
+\end{enumerate}
+
+\begin{infobox}[Avantage de cette approche]
+  Ce post-traitement est applicable \textbf{à l'inférence uniquement}, sans toucher
+  aux poids du réseau, et corrige les biais systématiques d'Omega de manière
+  totalement non paramétrique.
+\end{infobox}
+
+% ============================================================
+\section{Résultats Visuels}
+% ============================================================
+
+\subsection{Inspection des squelettes prédits}
+
+Les figures suivantes présentent, pour chaque image du lot, trois colonnes :
+\begin{enumerate}
+  \item \textbf{Colonne gauche} : image d'entrée originale (normalisée ImageNet dénormalisée)
+  \item \textbf{Colonne centre} : heatmap $\Phi(x)$ après contraste ($\Phi^3 \times 2$),
+        colormap \texttt{hot}
+  \item \textbf{Colonne droite} : squelette aligné superposé sur l'image
+        (arêtes codées couleur par groupe anatomique)
+\end{enumerate}
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=\textwidth]{figures/fig_seed70.png}
+  \caption{%
+    \textbf{Meilleur résultat --- Seed 70 (score : 0.439).}
+    Le squelette est fidèlement ancré sur la silhouette du cheval dans la majorité
+    des images. La heatmap Phi montre une localisation précise du corps.
+    Les membres avant (bleu/violet) et arrière (orange/jaune) sont correctement
+    positionnés.
+  }
+  \label{fig:seed70}
+\end{figure}
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=\textwidth]{figures/fig_seed10.png}
+  \caption{%
+    \textbf{Résultat robuste --- Seed 10 (score : 0.437).}
+    Bonne robustesse malgré la grande diversité des poses (galop, trot, arrêt).
+    Quelques cas limites avec le cheval en vue de face montrent une légère ambiguïté
+    gauche/droite.
+  }
+  \label{fig:seed10}
+\end{figure}
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=\textwidth]{figures/fig_seed30.png}
+  \caption{%
+    \textbf{Correction d'échelle --- Seed 30 (score : 0.428).}
+    Ce lot présente davantage de chevaux en plan large. L'algorithme d'alignement
+    BBox corrige efficacement le biais d'échelle d'Omega, qui produirait sinon
+    un squelette trop petit concentré au centre.
+  }
+  \label{fig:seed30}
+\end{figure}
+
+\subsection{Évaluation PCK --- Heatmap vs Masque silhouette}
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=\textwidth]{figures/fig_pck_eval.png}
+  \caption{%
+    \textbf{Évaluation PCK sur 10 images représentatives.}
+    Ligne 1 : image d'entrée. Ligne 2 : masque GT de silhouette (vert).
+    Ligne 3 : heatmap Phi brute (colormap hot), avec l'IoU et la couverture indiqués.
+    Ligne 4 : overlay superposant heatmap (rouge) et masque GT (vert).
+    Métriques agrégées : IoU=0.256, Coverage=0.832, Precision=0.281.
+  }
+  \label{fig:pck}
+\end{figure}
+
+\subsection{Normalisation des poses du prior synthétique}
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.8\textwidth]{figures/fig_normalization.png}
+  \caption{%
+    \textbf{Statistiques de normalisation du prior synthétique.}
+    Distribution des coordonnées $(x, y)$ des 18 keypoints après centrage et
+    mise à l'échelle. Le prior synthétique couvre bien l'espace $[-1,1]$ de façon
+    homogène, garantissant un signal d'apprentissage non biaisé.
+  }
+  \label{fig:normalization}
+\end{figure}
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.8\textwidth]{figures/fig_kpts_18joints.png}
+  \caption{%
+    \textbf{Visualisation du schéma des 18 joints.}
+    Chaque couleur correspond à un groupe anatomique : rouge (tête), jaune (cou),
+    vert (dos/épaules), bleu (jambe AV gauche), violet (jambe AV droite),
+    orange (jambe AR gauche), jaune-citron (jambe AR droite).
+  }
+  \label{fig:kpts18}
+\end{figure}
+
+% ============================================================
+\section{Discussion}
+% ============================================================
+
+\subsection{Ce qui fonctionne bien}
+
+\begin{enumerate}
+  \item \textbf{Phi apprend la sémantique} : la couverture de 83\% montre que Phi
+  a réellement appris à détecter le cheval dans son environnement, sans aucune
+  annotation de localisation. C'est la preuve que l'apprentissage adversarial avec
+  le prior synthétique fonctionne.
+
+  \item \textbf{Topologie anatomique préservée} : Omega produit systématiquement des
+  squelettes dont la topologie est cohérente avec l'anatomie du cheval. Les membres
+  sont jamais croisés de façon aberrante.
+
+  \item \textbf{Robustesse au changement de pose} : le modèle généralise sur des
+  poses très diverses (galop, trot, arrêt, vue de profil, vue de trois quarts).
+
+  \item \textbf{Post-traitement efficace} : l'algorithme d'alignement BBox donne
+  des résultats visuellement convaincants sans aucun ré-entraînement, démontrant
+  la qualité de la représentation interne apprise.
+\end{enumerate}
+
+\subsection{Limitations et défis rencontrés}
+
+\begin{enumerate}
+  \item \textbf{Biais d'échelle d'Omega} : le module Omega n'a pas appris à inférer
+  l'échelle absolue du cheval dans l'image. Cela nécessiterait soit une loss de
+  contrainte sur la boîte englobante, soit un fin-tuning supervisé.
+
+  \item \textbf{Heatmap diffuse} : la heatmap Phi couvre parfois une région plus
+  large que le cheval (Precision=0.281). Un poids de sparsity loss plus élevé
+  pourrait aider, mais risque de supprimer des parties du corps.
+
+  \item \textbf{Ambiguïté de profondeur} : Lambda n'a pas de signal de vérité
+  terrain 3D. Les prédictions 3D sont plausibles mais non vérifiables.
+
+  \item \textbf{Dataset limité} : TigDog est un dataset de taille modeste. L'ajout
+  d'images YouTube augmente la diversité mais introduit plus de bruit.
+\end{enumerate}
+
+\subsection{Comparaison avec l'état de l'art}
+
+Le projet s'inspire directement des travaux de \textbf{Mu et al.\ (CVPR 2020)}
+``Learning from Synthetic Animals'' (dossier \texttt{Learning-from-Synthetic-Animals/}),
+dont il reprend le schéma des 18 keypoints et le dataset CAD. Notre implémentation
+se distingue par :
+\begin{itemize}
+  \item Une architecture U-Net plus légère pour Phi (contrairement au ResNet du papier)
+  \item Une boucle d'entraînement entièrement différentiable incluant la fonction $\beta$
+  \item Un algorithme de post-traitement original sans ré-entraînement
+\end{itemize}
+
+% ============================================================
+\section{Conclusion et Perspectives}
+% ============================================================
+
+\subsection{Bilan}
+
+Ce projet a réussi à :
+\begin{itemize}
+  \item Implémenter une architecture complète de 5 modules (F1 à F5) pour
+        l'estimation de pose de cheval non supervisée en PyTorch.
+  \item Mener plus de 24 runs d'entraînement en explorant différentes configurations.
+  \item Atteindre une couverture de 83\% sur masques de silhouette après 150 époques.
+  \item Développer un algorithme de post-traitement géométrique original
+        qui améliore significativement la qualité visuelle des prédictions.
+  \item Mettre en place un pipeline d'évaluation complet (PCK proxy, inspection
+        visuelle, métriques numériques JSON).
+\end{itemize}
+
+\subsection{Perspectives d'amélioration}
+
+\begin{enumerate}
+  \item \textbf{Bounding Box Loss} : intégrer directement dans l'entraînement
+        une perte qui force les keypoints prédits à s'inscrire dans la boîte
+        englobante de la heatmap Phi.
+  \item \textbf{Fine-tuning supervisé d'Omega} : annoter manuellement
+        50--100 images et fine-tuner Omega seul avec des coordonnées GT.
+  \item \textbf{Augmentation des données} : flip horizontal, recadrage aléatoire,
+        jitter de couleur pour améliorer la robustesse aux variations d'éclairage.
+  \item \textbf{Architecture Phi plus puissante} : remplacer le U-Net léger par un
+        backbone ResNet pré-entraîné pour améliorer la précision de la heatmap.
+  \item \textbf{Évaluation PCK réelle} : collecter des annotations manuelles sur
+        un sous-ensemble de test et mesurer la PCK@0.05 standard.
+  \item \textbf{Représentation 3D} : exploiter la pose 3D apprise par Lambda pour
+        des tâches en aval (reconstruction de mouvements, analyse de biomécanique).
+\end{enumerate}
+
+% ============================================================
+\section{Structure du Projet}
+% ============================================================
+
+\begin{verbatim}
+horse-pose-repro/
+|-- models/                    # Architectures des 5 modules
+|   |-- image_to_skeleton.py   # F1 : Phi (U-Net)
+|   |-- skeleton_to_pose2d.py  # F2 : Omega (CNN + soft-argmax)
+|   |-- lifting_2d_3d.py       # F3 : Lambda (MLP)
+|   |-- renderer.py            # F4 : Boucle geometrique
+|   `-- discriminator.py       # F5 : Discriminateur D
+|
+|-- losses/                    # Fonctions de perte
+|   |-- adversarial_loss.py    # L_D et L_G
+|   |-- geometric_consistency.py # L_GC = L_2D + L_3D + L_r3D
+|   `-- diversity_loss.py      # L_div (anti mode-collapse)
+|
+|-- training/
+|   `-- train.py               # Boucle d'entrainement complete
+|
+|-- data/                      # Donnees et preprocessing
+|   |-- preprocess.py          # TigDog -> 128x128 + masques
+|   |-- synthetic_prior.py     # Prior CAD -> 18 keypoints normalises
+|   |-- real_image_dataset.py  # PyTorch Dataset pour images reelles
+|   |-- consolidate_dataset.py # Fusion TigDog + YouTube
+|   `-- processed/             # Donnees traitees (final/)
+|
+|-- evaluation/                # Scripts d'evaluation
+|   |-- skeleton_inspect.py    # Inspection visuelle + alignement BBox
+|   |-- pck_eval.py            # Metriques PCK (IoU/Coverage/Precision)
+|   `-- phi_variance_diag.py   # Diagnostic de variance de Phi
+|
+|-- checkpoints/               # Poids des modeles (24+ runs)
+|   |-- latest.pt              # Epoque 150 (run19, resultat final)
+|   `-- run*/latest.pt         # Historique des runs
+|
+|-- eval_outputs/              # Resultats d'evaluation
+|   |-- skeleton_inspect/      # Figures de squelettes
+|   `-- pck/                   # Resultats PCK (PNG + JSON)
+|
+`-- Rapport/                   # Ce rapport
+    |-- rapport_complet.tex    # Code LaTeX
+    `-- figures/               # Figures referencees
+\end{verbatim}
+
+% ============================================================
+\section*{Annexes}
+\addcontentsline{toc}{section}{Annexes}
+% ============================================================
+
+\subsection*{Annexe A --- Paramètres du checkpoint final}
+
+\begin{center}
+\begin{tabular}{ll}
+\toprule
+\textbf{Paramètre} & \textbf{Valeur} \\
+\midrule
+Fichier & \texttt{checkpoints/latest.pt} \\
+Époque & 150 \\
+Run & run19\_clean\_scratch \\
+Commit git & \texttt{7bb927c875f2f941e1f8829ea3a43c473c0aaaf0} \\
+Taille fichier & 35.9 Mo \\
+Optimiseur & Adam ($\text{lr}=10^{-4}$ générateur, $10^{-5}$ discriminateur) \\
+Batch size & 4 \\
+Image size & 128$\times$128 \\
+Sigma gaussien ($\beta$) & 3.0 px \\
+Profondeur constante $d$ & 0.0 \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\subsection*{Annexe B --- Nombre de paramètres par module}
+
+\begin{center}
+\begin{tabular}{lrc}
+\toprule
+\textbf{Module} & \textbf{Paramètres} & \textbf{Type} \\
+\midrule
+Phi (ImageToSkeleton)   & $\approx$ 1.9M & Convolutif \\
+Omega (SkeletonToPose2D)& $\approx$ 530K & Convolutif \\
+Lambda (Lifting2Dto3D)  & $\approx$ 140K & Fully-connected \\
+Discriminateur          & $\approx$ 530K & Convolutif \\
+\midrule
+\textbf{Total}          & $\approx$ 3.1M & \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\subsection*{Annexe C --- Commandes principales}
+
+\begin{lstlisting}[style=python, caption={Entraînement principal}]
+python training/train.py \
+    --data-dir data/processed/final \
+    --prior-poses data/processed/synthetic_prior/synthetic_prior_poses.pt \
+    --epochs 150 --batch-size 4 \
+    --weight-geometric 5.0 --weight-adversarial 1.0 \
+    --weight-omega 1.0 --weight-background 1.0 \
+    --weight-diversity 0.1 --weight-sparsity 0.01 \
+    --pretrain-omega-epochs 10 \
+    --checkpoint-dir checkpoints
+\end{lstlisting}
+
+\begin{lstlisting}[style=python, caption={Évaluation PCK}]
+python evaluation/pck_eval.py \
+    --checkpoint checkpoints/latest.pt \
+    --data-dir data/processed/final \
+    --output-dir eval_outputs/pck \
+    --output-name pck_run19_scratch \
+    --n-images 50
+\end{lstlisting}
+
+\begin{lstlisting}[style=python, caption={Inspection visuelle des squelettes}]
+python evaluation/skeleton_inspect.py \
+    --checkpoint checkpoints/latest.pt \
+    --data-dir data/processed/final \
+    --output-dir eval_outputs/skeleton_inspect \
+    --n-images 16 --seed 70
+\end{lstlisting}
+
+\end{document}

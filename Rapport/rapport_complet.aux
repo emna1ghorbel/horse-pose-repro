@@ -1,0 +1,88 @@
+\relax 
+\providecommand\zref@newlabel[2]{}
+\providecommand \babel@aux [2]{\global \let \babel@toc \@gobbletwo }
+\@nameuse{bbl@beforestart}
+\catcode `:\active 
+\catcode `;\active 
+\catcode `!\active 
+\catcode `?\active 
+\providecommand\hyper@newdestlabel[2]{}
+\providecommand\HyField@AuxAddToFields[1]{}
+\providecommand\HyField@AuxAddToCoFields[2]{}
+\babel@aux{french}{}
+\pgfsyspdfmark {pgfid1}{6376169}{49932859}
+\@writefile{toc}{\contentsline {section}{Remerciements}{1}{Doc-Start}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {1}Introduction et Contexte}{5}{section.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {1.1}Contexte du projet}{5}{subsection.1.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {1.2}Jeux de données utilisés}{5}{subsection.1.2}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {1.3}Les 18 points clés anatomiques}{5}{subsection.1.3}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {2}Architecture Globale du Modèle}{6}{section.2}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {2.1}Vue d'ensemble}{6}{subsection.2.1}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {1}{\ignorespaces Pipeline complet du modèle horse-pose-repro.}}{7}{figure.caption.2}\protected@file@percent }
+\providecommand*\caption@xref[2]{\@setref\relax\@undefined{#1}}
+\newlabel{fig:figx}{{1}{7}{Pipeline complet du modèle horse-pose-repro}{figure.caption.2}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {2.2}F1 --- Module Phi : ImageToSkeleton (U-Net)}{7}{subsection.2.2}\protected@file@percent }
+\newlabel{sec:phi}{{2.2}{7}{F1 --- Module Phi : ImageToSkeleton (U-Net)}{subsection.2.2}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {1}{\ignorespaces Architecture du module Phi (U-Net, \texttt  {base\_channels=32}).}}{8}{table.caption.4}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {2.3}F2 --- Module Omega : SkeletonToPose2D}{8}{subsection.2.3}\protected@file@percent }
+\newlabel{sec:omega}{{2.3}{8}{F2 --- Module Omega : SkeletonToPose2D}{subsection.2.3}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {2.4}F3 --- Module Lambda : Lifting2Dto3D}{9}{subsection.2.4}\protected@file@percent }
+\newlabel{sec:lambda}{{2.4}{9}{F3 --- Module Lambda : Lifting2Dto3D}{subsection.2.4}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {2.5}F4 --- Boucle de Cohérence Géométrique}{9}{subsection.2.5}\protected@file@percent }
+\newlabel{sec:geo}{{2.5}{9}{F4 --- Boucle de Cohérence Géométrique}{subsection.2.5}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {2.6}F5 --- Discriminateur D}{10}{subsection.2.6}\protected@file@percent }
+\newlabel{sec:disc}{{2.6}{10}{F5 --- Discriminateur D}{subsection.2.6}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {2}{\ignorespaces Architecture du Discriminateur (base\_channels=32).}}{10}{table.caption.10}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {3}Fonction de Rendu Différentiable $\beta $}{10}{section.3}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {4}Fonctions de Perte}{11}{section.4}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.1}Perte adversariale $\mathcal  {L}_D$ et $\mathcal  {L}_G$}{11}{subsection.4.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.2}Perte de cohérence géométrique $\mathcal  {L}_{GC}$}{11}{subsection.4.2}\protected@file@percent }
+\newlabel{eq:l2d}{{10}{11}{Perte de cohérence géométrique $\mathcal {L}_{GC}$}{equation.10}{}}
+\newlabel{eq:l3d}{{11}{11}{Perte de cohérence géométrique $\mathcal {L}_{GC}$}{equation.11}{}}
+\newlabel{eq:lr3d}{{12}{11}{Perte de cohérence géométrique $\mathcal {L}_{GC}$}{equation.12}{}}
+\newlabel{eq:lgc}{{13}{11}{Perte de cohérence géométrique $\mathcal {L}_{GC}$}{equation.13}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.3}Perte Omega $\mathcal  {L}_\Omega $}{11}{subsection.4.3}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.4}Perte de diversité $\mathcal  {L}_{div}$}{12}{subsection.4.4}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.5}Pertes auxiliaires}{12}{subsection.4.5}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.6}Perte totale}{12}{subsection.4.6}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {3}{\ignorespaces Poids de pertes utilisés pour l'entraînement principal.}}{12}{table.caption.12}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {5}Stratégie d'Entraînement}{12}{section.5}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.1}Pipeline d'entraînement}{12}{subsection.5.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.2}Pré-entraînement d'Omega}{13}{subsection.5.2}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.3}Historique des runs d'entraînement}{13}{subsection.5.3}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {6}Évaluation et Métriques}{14}{section.6}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {6.1}Métriques utilisées}{14}{subsection.6.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {6.2}Résultats quantitatifs}{15}{subsection.6.2}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {6.3}Analyse des résultats}{15}{subsection.6.3}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {7}Post-Traitement : Alignement par Boîte Englobante}{16}{section.7}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {7.1}Motivation}{16}{subsection.7.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {7.2}Algorithme d'alignement}{16}{subsection.7.2}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {8}Résultats Visuels}{16}{section.8}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {8.1}Inspection des squelettes prédits}{16}{subsection.8.1}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {2}{\ignorespaces \textbf  {Meilleur résultat --- Seed 70 (score : 0.439).} Le squelette est fidèlement ancré sur la silhouette du cheval dans la majorité des images. La heatmap Phi montre une localisation précise du corps. Les membres avant (bleu/violet) et arrière (orange/jaune) sont correctement positionnés. }}{17}{figure.caption.19}\protected@file@percent }
+\newlabel{fig:seed70}{{2}{17}{\textbf {Meilleur résultat --- Seed 70 (score : 0.439).} Le squelette est fidèlement ancré sur la silhouette du cheval dans la majorité des images. La heatmap Phi montre une localisation précise du corps. Les membres avant (bleu/violet) et arrière (orange/jaune) sont correctement positionnés}{figure.caption.19}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {3}{\ignorespaces \textbf  {Résultat robuste --- Seed 10 (score : 0.437).} Bonne robustesse malgré la grande diversité des poses (galop, trot, arrêt). Quelques cas limites avec le cheval en vue de face montrent une légère ambiguïté gauche/droite. }}{17}{figure.caption.20}\protected@file@percent }
+\newlabel{fig:seed10}{{3}{17}{\textbf {Résultat robuste --- Seed 10 (score : 0.437).} Bonne robustesse malgré la grande diversité des poses (galop, trot, arrêt). Quelques cas limites avec le cheval en vue de face montrent une légère ambiguïté gauche/droite}{figure.caption.20}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {4}{\ignorespaces \textbf  {Correction d'échelle --- Seed 30 (score : 0.428).} Ce lot présente davantage de chevaux en plan large. L'algorithme d'alignement BBox corrige efficacement le biais d'échelle d'Omega, qui produirait sinon un squelette trop petit concentré au centre. }}{18}{figure.caption.21}\protected@file@percent }
+\newlabel{fig:seed30}{{4}{18}{\textbf {Correction d'échelle --- Seed 30 (score : 0.428).} Ce lot présente davantage de chevaux en plan large. L'algorithme d'alignement BBox corrige efficacement le biais d'échelle d'Omega, qui produirait sinon un squelette trop petit concentré au centre}{figure.caption.21}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {8.2}Évaluation PCK --- Heatmap vs Masque silhouette}{18}{subsection.8.2}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {5}{\ignorespaces \textbf  {Évaluation PCK sur 10 images représentatives.} Ligne 1 : image d'entrée. Ligne 2 : masque GT de silhouette (vert). Ligne 3 : heatmap Phi brute (colormap hot), avec l'IoU et la couverture indiqués. Ligne 4 : overlay superposant heatmap (rouge) et masque GT (vert). Métriques agrégées : IoU=0.256, Coverage=0.832, Precision=0.281. }}{18}{figure.caption.22}\protected@file@percent }
+\newlabel{fig:pck}{{5}{18}{\textbf {Évaluation PCK sur 10 images représentatives.} Ligne 1 : image d'entrée. Ligne 2 : masque GT de silhouette (vert). Ligne 3 : heatmap Phi brute (colormap hot), avec l'IoU et la couverture indiqués. Ligne 4 : overlay superposant heatmap (rouge) et masque GT (vert). Métriques agrégées : IoU=0.256, Coverage=0.832, Precision=0.281}{figure.caption.22}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {8.3}Normalisation des poses du prior synthétique}{19}{subsection.8.3}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {6}{\ignorespaces \textbf  {Statistiques de normalisation du prior synthétique.} Distribution des coordonnées $(x, y)$ des 18 keypoints après centrage et mise à l'échelle. Le prior synthétique couvre bien l'espace $[-1,1]$ de façon homogène, garantissant un signal d'apprentissage non biaisé. }}{19}{figure.caption.23}\protected@file@percent }
+\newlabel{fig:normalization}{{6}{19}{\textbf {Statistiques de normalisation du prior synthétique.} Distribution des coordonnées $(x, y)$ des 18 keypoints après centrage et mise à l'échelle. Le prior synthétique couvre bien l'espace $[-1,1]$ de façon homogène, garantissant un signal d'apprentissage non biaisé}{figure.caption.23}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {7}{\ignorespaces \textbf  {Visualisation du schéma des 18 joints.} Chaque couleur correspond à un groupe anatomique : rouge (tête), jaune (cou), vert (dos/épaules), bleu (jambe AV gauche), violet (jambe AV droite), orange (jambe AR gauche), jaune-citron (jambe AR droite). }}{20}{figure.caption.24}\protected@file@percent }
+\newlabel{fig:kpts18}{{7}{20}{\textbf {Visualisation du schéma des 18 joints.} Chaque couleur correspond à un groupe anatomique : rouge (tête), jaune (cou), vert (dos/épaules), bleu (jambe AV gauche), violet (jambe AV droite), orange (jambe AR gauche), jaune-citron (jambe AR droite)}{figure.caption.24}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {9}Discussion}{20}{section.9}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {9.1}Ce qui fonctionne bien}{20}{subsection.9.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {9.2}Limitations et défis rencontrés}{20}{subsection.9.2}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {9.3}Comparaison avec l'état de l'art}{21}{subsection.9.3}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {10}Conclusion et Perspectives}{21}{section.10}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {10.1}Bilan}{21}{subsection.10.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {10.2}Perspectives d'amélioration}{21}{subsection.10.2}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {11}Structure du Projet}{22}{section.11}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{Annexes}{23}{section*.25}\protected@file@percent }
+\@writefile{lol}{\contentsline {lstlisting}{\numberline {1}{\ignorespaces Entraînement principal}}{23}{lstlisting.1}\protected@file@percent }
+\@writefile{lol}{\contentsline {lstlisting}{\numberline {2}{\ignorespaces Évaluation PCK}}{23}{lstlisting.2}\protected@file@percent }
+\@writefile{lol}{\contentsline {lstlisting}{\numberline {3}{\ignorespaces Inspection visuelle des squelettes}}{24}{lstlisting.3}\protected@file@percent }
+\gdef \@abspage@last{25}

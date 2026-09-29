@@ -1,0 +1,45 @@
+\babel@toc {french}{}\relax 
+\contentsline {section}{Remerciements}{1}{Doc-Start}%
+\contentsline {section}{\numberline {1}Introduction et Contexte}{5}{section.1}%
+\contentsline {subsection}{\numberline {1.1}Contexte du projet}{5}{subsection.1.1}%
+\contentsline {subsection}{\numberline {1.2}Jeux de données utilisés}{5}{subsection.1.2}%
+\contentsline {subsection}{\numberline {1.3}Les 18 points clés anatomiques}{5}{subsection.1.3}%
+\contentsline {section}{\numberline {2}Architecture Globale du Modèle}{6}{section.2}%
+\contentsline {subsection}{\numberline {2.1}Vue d'ensemble}{6}{subsection.2.1}%
+\contentsline {subsection}{\numberline {2.2}F1 --- Module Phi : ImageToSkeleton (U-Net)}{7}{subsection.2.2}%
+\contentsline {subsection}{\numberline {2.3}F2 --- Module Omega : SkeletonToPose2D}{8}{subsection.2.3}%
+\contentsline {subsection}{\numberline {2.4}F3 --- Module Lambda : Lifting2Dto3D}{9}{subsection.2.4}%
+\contentsline {subsection}{\numberline {2.5}F4 --- Boucle de Cohérence Géométrique}{9}{subsection.2.5}%
+\contentsline {subsection}{\numberline {2.6}F5 --- Discriminateur D}{10}{subsection.2.6}%
+\contentsline {section}{\numberline {3}Fonction de Rendu Différentiable $\beta $}{10}{section.3}%
+\contentsline {section}{\numberline {4}Fonctions de Perte}{11}{section.4}%
+\contentsline {subsection}{\numberline {4.1}Perte adversariale $\mathcal {L}_D$ et $\mathcal {L}_G$}{11}{subsection.4.1}%
+\contentsline {subsection}{\numberline {4.2}Perte de cohérence géométrique $\mathcal {L}_{GC}$}{11}{subsection.4.2}%
+\contentsline {subsection}{\numberline {4.3}Perte Omega $\mathcal {L}_\Omega $}{11}{subsection.4.3}%
+\contentsline {subsection}{\numberline {4.4}Perte de diversité $\mathcal {L}_{div}$}{12}{subsection.4.4}%
+\contentsline {subsection}{\numberline {4.5}Pertes auxiliaires}{12}{subsection.4.5}%
+\contentsline {subsection}{\numberline {4.6}Perte totale}{12}{subsection.4.6}%
+\contentsline {section}{\numberline {5}Stratégie d'Entraînement}{12}{section.5}%
+\contentsline {subsection}{\numberline {5.1}Pipeline d'entraînement}{12}{subsection.5.1}%
+\contentsline {subsection}{\numberline {5.2}Pré-entraînement d'Omega}{13}{subsection.5.2}%
+\contentsline {subsection}{\numberline {5.3}Historique des runs d'entraînement}{13}{subsection.5.3}%
+\contentsline {section}{\numberline {6}Évaluation et Métriques}{14}{section.6}%
+\contentsline {subsection}{\numberline {6.1}Métriques utilisées}{14}{subsection.6.1}%
+\contentsline {subsection}{\numberline {6.2}Résultats quantitatifs}{15}{subsection.6.2}%
+\contentsline {subsection}{\numberline {6.3}Analyse des résultats}{15}{subsection.6.3}%
+\contentsline {section}{\numberline {7}Post-Traitement : Alignement par Boîte Englobante}{16}{section.7}%
+\contentsline {subsection}{\numberline {7.1}Motivation}{16}{subsection.7.1}%
+\contentsline {subsection}{\numberline {7.2}Algorithme d'alignement}{16}{subsection.7.2}%
+\contentsline {section}{\numberline {8}Résultats Visuels}{16}{section.8}%
+\contentsline {subsection}{\numberline {8.1}Inspection des squelettes prédits}{16}{subsection.8.1}%
+\contentsline {subsection}{\numberline {8.2}Évaluation PCK --- Heatmap vs Masque silhouette}{18}{subsection.8.2}%
+\contentsline {subsection}{\numberline {8.3}Normalisation des poses du prior synthétique}{19}{subsection.8.3}%
+\contentsline {section}{\numberline {9}Discussion}{20}{section.9}%
+\contentsline {subsection}{\numberline {9.1}Ce qui fonctionne bien}{20}{subsection.9.1}%
+\contentsline {subsection}{\numberline {9.2}Limitations et défis rencontrés}{20}{subsection.9.2}%
+\contentsline {subsection}{\numberline {9.3}Comparaison avec l'état de l'art}{21}{subsection.9.3}%
+\contentsline {section}{\numberline {10}Conclusion et Perspectives}{21}{section.10}%
+\contentsline {subsection}{\numberline {10.1}Bilan}{21}{subsection.10.1}%
+\contentsline {subsection}{\numberline {10.2}Perspectives d'amélioration}{21}{subsection.10.2}%
+\contentsline {section}{\numberline {11}Structure du Projet}{22}{section.11}%
+\contentsline {section}{Annexes}{23}{section*.25}%

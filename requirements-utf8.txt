@@ -1,0 +1,14 @@
+# UTF-8 dependency manifest. The legacy requirements.txt is UTF-16 and cannot
+# be consumed reliably by pip. Install with:
+#   python -m pip install -r requirements-utf8.txt
+# ffmpeg remains a system dependency for data/extract_youtube_frames.py.
+torch>=2.0,<3
+torchvision>=0.15,<1
+numpy>=1.24,<3
+pillow>=9
+matplotlib>=3.7
+scipy>=1.10
+opencv-python>=4.8,<5
+ultralytics>=8
+yt-dlp>=2024.1
+pytest>=7

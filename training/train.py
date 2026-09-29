@@ -148,12 +148,17 @@ def train_step(batch_images, batch_masks, batch_prior_poses, models, optimizers,
     else:
         loss_background = torch.tensor(0.0, device=s.device)
 
+    # Sparsity loss : force Phi à produire une heatmap fine (pas diffuse)
+    # On veut phi_out.mean() << 0.1 pour avoir un squelette visible et net.
+    loss_sparsity = s.mean()
+
     loss_total_generator = (
         loss_weights["adversarial"] * loss_g_adv
         + loss_weights["geometric"] * loss_gc
         + loss_weights["omega"] * loss_omega
         + loss_weights["background"] * loss_background
         + loss_weights.get("diversity", 1.0) * loss_div
+        + loss_weights.get("sparsity", 0.0) * loss_sparsity
     )
 
     # ---- Backward + step : générateur d'abord ----
@@ -184,6 +189,7 @@ def train_step(batch_images, batch_masks, batch_prior_poses, models, optimizers,
         "loss_omega": loss_omega.item(),
         "loss_diversity": loss_div.item(),
         "loss_background": loss_background.item(),
+        "loss_sparsity": loss_sparsity.item(),
         "loss_total": loss_total_generator.item(),
     }
 
@@ -209,6 +215,8 @@ def main():
     parser.add_argument("--weight-omega", type=float, default=1.0)
     parser.add_argument("--weight-background", type=float, default=1.0)
     parser.add_argument("--weight-diversity", type=float, default=0.1)
+    parser.add_argument("--weight-sparsity", type=float, default=0.01,
+                         help="Poids de la L1 sparsity loss sur Phi (defaut: 0.01). Augmenter si heatmap trop diffuse.")
     parser.add_argument("--pretrain-omega-epochs", type=int, default=10,
                          help="Nombre d'epochs de pre-entrainement d'Omega seul (defaut: 10)")
     parser.add_argument("--d-freeze-threshold", type=float, default=0.2,
@@ -217,6 +225,8 @@ def main():
                         help="Epaisseur des segments gaussiens (defaut: 3.0)")
     parser.add_argument("--constant-depth", type=float, default=0.0,
                         help="Profondeur constante d ajoutee par Lambda (defaut: 0.0)")
+    parser.add_argument("--resume", type=str, default="",
+                        help="Chemin vers un checkpoint (.pt) pour reprendre l'entrainement")
     args = parser.parse_args()
 
     if min(args.weight_adversarial, args.weight_geometric, args.weight_omega,
@@ -249,7 +259,29 @@ def main():
         "omega": args.weight_omega,
         "background": args.weight_background,
         "diversity": args.weight_diversity,
+        "sparsity": args.weight_sparsity,
     }
+    
+    start_epoch = 1
+    if args.resume and os.path.exists(args.resume):
+        print(f"Reprise depuis le checkpoint : {args.resume}")
+        ckpt = torch.load(args.resume, map_location=device, weights_only=False)
+
+        phi.load_state_dict(ckpt["phi"])
+        omega.load_state_dict(ckpt["omega"])
+        lambda_net.load_state_dict(ckpt["lambda_net"])
+        discriminator.load_state_dict(ckpt["discriminator"])
+
+        # Optimiseurs : restaures si disponibles
+        try:
+            opt_generator.load_state_dict(ckpt["optimizer_generator"])
+            opt_discriminator.load_state_dict(ckpt["optimizer_discriminator"])
+            print("  Optimiseurs restaures depuis le checkpoint.")
+        except Exception as e:
+            print(f"  [WARN] Etats des optimiseurs non restaures ({e}). Reprise avec optimiseurs frais.")
+
+        start_epoch = ckpt.get("epoch", 0) + 1
+        print(f"  Checkpoint charge (epoch {ckpt.get('epoch','?')}). Reprise a partir de l'epoch {start_epoch}.")
 
     if args.dummy:
         real_loader = None
@@ -304,9 +336,9 @@ def main():
         opt_generator = torch.optim.Adam(generator_params, lr=args.lr)
         optimizers = (opt_generator, opt_discriminator)
 
-    for epoch in range(1, args.epochs + 1):
+    for epoch in range(start_epoch, args.epochs + 1):
         epoch_losses = {"loss_d": 0, "loss_g_adv": 0, "loss_gc": 0, "loss_omega": 0,
-                        "loss_diversity": 0, "loss_background": 0, "loss_total": 0}
+                        "loss_diversity": 0, "loss_background": 0, "loss_sparsity": 0, "loss_total": 0}
 
         if real_loader is not None:
             batch_iter = iter(real_loader)

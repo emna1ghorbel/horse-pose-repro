@@ -1,0 +1,467 @@
+{
+  "checkpoint": "checkpoints\\run19_clean_scratch\\latest.pt",
+  "commit": "7bb927c875f2f941e1f8829ea3a43c473c0aaaf0",
+  "n_images": 50,
+  "thresh": 0.3,
+  "seed": 42,
+  "aggregate": {
+    "iou": 0.2563215127471158,
+    "coverage": 0.8320024963366827,
+    "precision": 0.28147050999897194,
+    "weighted_frac": 0.2836451839973532,
+    "pred_pixels": 4222.88,
+    "mask_pixels": 1605.66
+  },
+  "per_image": [
+    {
+      "file": "tigdog_100_00018106.jpg",
+      "iou": 0.375784753362667,
+      "coverage": 0.8088803088777063,
+      "precision": 0.4124015748024731,
+      "weighted_frac": 0.4074748970703315,
+      "pred_pixels": 6096,
+      "mask_pixels": 3108
+    },
+    {
+      "file": "tigdog_102_00018379.jpg",
+      "iou": 0.16502516962100017,
+      "coverage": 0.8231441047945072,
+      "precision": 0.1710914454273404,
+      "weighted_frac": 0.16646374649139803,
+      "pred_pixels": 4407,
+      "mask_pixels": 916
+    },
+    {
+      "file": "tigdog_104_00018385.jpg",
+      "iou": 0.21184456928789364,
+      "coverage": 0.8570075757494603,
+      "precision": 0.21960689153064886,
+      "weighted_frac": 0.2231840386034915,
+      "pred_pixels": 4121,
+      "mask_pixels": 1056
+    },
+    {
+      "file": "tigdog_123_00020115.jpg",
+      "iou": 0.4735264735256851,
+      "coverage": 0.851242143068389,
+      "precision": 0.5162461426746846,
+      "weighted_frac": 0.5211948670209287,
+      "pred_pixels": 5509,
+      "mask_pixels": 3341
+    },
+    {
+      "file": "tigdog_142_00021400.jpg",
+      "iou": 0.3823609226583925,
+      "coverage": 0.7319480519442496,
+      "precision": 0.44461975386416974,
+      "weighted_frac": 0.4517968946775614,
+      "pred_pixels": 3169,
+      "mask_pixels": 1925
+    },
+    {
+      "file": "tigdog_164_00025025.jpg",
+      "iou": 0.2651827425109503,
+      "coverage": 0.9470068694705888,
+      "precision": 0.2691771269169619,
+      "weighted_frac": 0.2741840262673176,
+      "pred_pixels": 3585,
+      "mask_pixels": 1019
+    },
+    {
+      "file": "tigdog_181_00026705.jpg",
+      "iou": 0.25301204819218487,
+      "coverage": 0.9138075313731063,
+      "precision": 0.25919772133809826,
+      "weighted_frac": 0.27380951680040155,
+      "pred_pixels": 4213,
+      "mask_pixels": 1195
+    },
+    {
+      "file": "tigdog_194_00028585.jpg",
+      "iou": 0.2642153146317964,
+      "coverage": 0.8767295597429137,
+      "precision": 0.2744094488183575,
+      "weighted_frac": 0.2725392651245565,
+      "pred_pixels": 5080,
+      "mask_pixels": 1590
+    },
+    {
+      "file": "tigdog_196_00028821.jpg",
+      "iou": 0.21520106053863192,
+      "coverage": 0.8289361702057113,
+      "precision": 0.22520231213820763,
+      "weighted_frac": 0.2366191360290243,
+      "pred_pixels": 4325,
+      "mask_pixels": 1175
+    },
+    {
+      "file": "tigdog_196_00029115.jpg",
+      "iou": 0.2200226244337669,
+      "coverage": 0.8761261261162598,
+      "precision": 0.22708698190243115,
+      "weighted_frac": 0.2306247764600636,
+      "pred_pixels": 3426,
+      "mask_pixels": 888
+    },
+    {
+      "file": "tigdog_230_00036399.jpg",
+      "iou": 0.2463942307688077,
+      "coverage": 0.8352735739183046,
+      "precision": 0.25897852373171093,
+      "weighted_frac": 0.2576002763699293,
+      "pred_pixels": 5541,
+      "mask_pixels": 1718
+    },
+    {
+      "file": "tigdog_230_00036663.jpg",
+      "iou": 0.1807659574465008,
+      "coverage": 0.6932114882461279,
+      "precision": 0.19648473635486313,
+      "weighted_frac": 0.1962239121091229,
+      "pred_pixels": 5405,
+      "mask_pixels": 1532
+    },
+    {
+      "file": "tigdog_236_00037533.jpg",
+      "iou": 0.11292246520829852,
+      "coverage": 0.8184438040109958,
+      "precision": 0.11582381729153417,
+      "weighted_frac": 0.11897615708473551,
+      "pred_pixels": 2452,
+      "mask_pixels": 347
+    },
+    {
+      "file": "tigdog_285_00047320.jpg",
+      "iou": 0.1527846229666023,
+      "coverage": 0.9825673533917184,
+      "precision": 0.15319990116097554,
+      "weighted_frac": 0.15595386166411068,
+      "pred_pixels": 4047,
+      "mask_pixels": 631
+    },
+    {
+      "file": "tigdog_289_00047527.jpg",
+      "iou": 0.15825688073349123,
+      "coverage": 0.9533678756312026,
+      "precision": 0.1594914764514317,
+      "weighted_frac": 0.16133634731485436,
+      "pred_pixels": 3461,
+      "mask_pixels": 579
+    },
+    {
+      "file": "tigdog_293_00048086.jpg",
+      "iou": 0.10240963855387414,
+      "coverage": 0.9652996845121357,
+      "precision": 0.1027880416523252,
+      "weighted_frac": 0.11023978631399443,
+      "pred_pixels": 2977,
+      "mask_pixels": 317
+    },
+    {
+      "file": "tigdog_300_00048898.jpg",
+      "iou": 0.10541195476532549,
+      "coverage": 0.9490909090563967,
+      "precision": 0.10601137286715674,
+      "weighted_frac": 0.11245670026546158,
+      "pred_pixels": 2462,
+      "mask_pixels": 275
+    },
+    {
+      "file": "tigdog_300_00049201.jpg",
+      "iou": 0.1557678177804711,
+      "coverage": 0.98834498832195,
+      "precision": 0.15605447184337118,
+      "weighted_frac": 0.16467455056818486,
+      "pred_pixels": 2717,
+      "mask_pixels": 429
+    },
+    {
+      "file": "tigdog_306_00049756.jpg",
+      "iou": 0.17729502452635848,
+      "coverage": 0.7881619937571938,
+      "precision": 0.18616629874839527,
+      "weighted_frac": 0.1910367358220172,
+      "pred_pixels": 2718,
+      "mask_pixels": 642
+    },
+    {
+      "file": "tigdog_344_00057813.jpg",
+      "iou": 0.39815817984760177,
+      "coverage": 0.8320754716949733,
+      "precision": 0.43294718240637553,
+      "weighted_frac": 0.4356206559304696,
+      "pred_pixels": 5093,
+      "mask_pixels": 2650
+    },
+    {
+      "file": "tigdog_365_00060530.jpg",
+      "iou": 0.16327507780664766,
+      "coverage": 0.7930232558047323,
+      "precision": 0.17054263565848826,
+      "weighted_frac": 0.16608719429342506,
+      "pred_pixels": 3999,
+      "mask_pixels": 860
+    },
+    {
+      "file": "tigdog_370_00061980.jpg",
+      "iou": 0.13825294509860359,
+      "coverage": 0.7765293383173967,
+      "precision": 0.1439814814811482,
+      "weighted_frac": 0.14319892132133952,
+      "pred_pixels": 4320,
+      "mask_pixels": 801
+    },
+    {
+      "file": "tigdog_388_00065737.jpg",
+      "iou": 0.16987951807177748,
+      "coverage": 0.9023999999855616,
+      "precision": 0.17305922061929102,
+      "weighted_frac": 0.17195706808997727,
+      "pred_pixels": 3259,
+      "mask_pixels": 625
+    },
+    {
+      "file": "tigdog_390_00065980.jpg",
+      "iou": 0.12242424242374779,
+      "coverage": 0.9999999999669966,
+      "precision": 0.12242424242374779,
+      "weighted_frac": 0.1279537341318232,
+      "pred_pixels": 2475,
+      "mask_pixels": 303
+    },
+    {
+      "file": "tigdog_437_00074469.jpg",
+      "iou": 0.26743638077222565,
+      "coverage": 0.8724058416535557,
+      "precision": 0.27832270720873387,
+      "weighted_frac": 0.2835738066705364,
+      "pred_pixels": 4078,
+      "mask_pixels": 1301
+    },
+    {
+      "file": "tigdog_485_00079939.jpg",
+      "iou": 0.16666666666608798,
+      "coverage": 0.96774193546436,
+      "precision": 0.1675977653625433,
+      "weighted_frac": 0.16988624633664398,
+      "pred_pixels": 2864,
+      "mask_pixels": 496
+    },
+    {
+      "file": "tigdog_516_00085527.jpg",
+      "iou": 0.43134252169419174,
+      "coverage": 0.5399361022355592,
+      "precision": 0.6820016142036279,
+      "weighted_frac": 0.6795009897140156,
+      "pred_pixels": 4956,
+      "mask_pixels": 6260
+    },
+    {
+      "file": "tigdog_528_00086708.jpg",
+      "iou": 0.43086651854310226,
+      "coverage": 0.8612914246639519,
+      "precision": 0.4629935720836309,
+      "weighted_frac": 0.45997597918665467,
+      "pred_pixels": 5445,
+      "mask_pixels": 2927
+    },
+    {
+      "file": "tigdog_535_00088295.jpg",
+      "iou": 0.1502057613164861,
+      "coverage": 0.966887417202535,
+      "precision": 0.15098241985483202,
+      "weighted_frac": 0.1501812382017052,
+      "pred_pixels": 3868,
+      "mask_pixels": 604
+    },
+    {
+      "file": "tigdog_542_00088841.jpg",
+      "iou": 0.5103488203784768,
+      "coverage": 0.7650249511808093,
+      "precision": 0.6052179883271452,
+      "weighted_frac": 0.6062920814064192,
+      "pred_pixels": 5826,
+      "mask_pixels": 4609
+    },
+    {
+      "file": "tigdog_549_00089398.jpg",
+      "iou": 0.33580579905540153,
+      "coverage": 0.843353090597615,
+      "precision": 0.3581445523186657,
+      "weighted_frac": 0.3537193897102332,
+      "pred_pixels": 5562,
+      "mask_pixels": 2362
+    },
+    {
+      "file": "tigdog_552_00089802.jpg",
+      "iou": 0.34961752433875243,
+      "coverage": 0.9046333783135194,
+      "precision": 0.36299638989104155,
+      "weighted_frac": 0.3638513637586309,
+      "pred_pixels": 5540,
+      "mask_pixels": 2223
+    },
+    {
+      "file": "tigdog_580_00094621.jpg",
+      "iou": 0.14243050769551474,
+      "coverage": 0.9422492401072606,
+      "precision": 0.14368482039364153,
+      "weighted_frac": 0.14998731025726697,
+      "pred_pixels": 4315,
+      "mask_pixels": 658
+    },
+    {
+      "file": "tigdog_583_00094991.jpg",
+      "iou": 0.06808090774526868,
+      "coverage": 0.6969696969520968,
+      "precision": 0.07015760040653239,
+      "weighted_frac": 0.07221708049897098,
+      "pred_pixels": 3934,
+      "mask_pixels": 396
+    },
+    {
+      "file": "tigdog_598_00096139.jpg",
+      "iou": 0.49484379739081763,
+      "coverage": 0.7405810258721276,
+      "precision": 0.5986057604098356,
+      "weighted_frac": 0.5894160760051099,
+      "pred_pixels": 5451,
+      "mask_pixels": 4406
+    },
+    {
+      "file": "tigdog_613_00097025.jpg",
+      "iou": 0.23783700030951682,
+      "coverage": 0.5596062705047044,
+      "precision": 0.29260388867652953,
+      "weighted_frac": 0.2949446110832631,
+      "pred_pixels": 5246,
+      "mask_pixels": 2743
+    },
+    {
+      "file": "tigdog_644_00098346.jpg",
+      "iou": 0.30156446682197163,
+      "coverage": 0.5826963168847022,
+      "precision": 0.3846330275220536,
+      "weighted_frac": 0.3846665930927867,
+      "pred_pixels": 4360,
+      "mask_pixels": 2878
+    },
+    {
+      "file": "tigdog_667_00098967.jpg",
+      "iou": 0.3357197647651861,
+      "coverage": 0.7728075338388888,
+      "precision": 0.3724822695024894,
+      "weighted_frac": 0.3805020600804016,
+      "pred_pixels": 3525,
+      "mask_pixels": 1699
+    },
+    {
+      "file": "tigdog_732_00104066.jpg",
+      "iou": 0.2812273496006735,
+      "coverage": 0.7247820672433077,
+      "precision": 0.3148498782788346,
+      "weighted_frac": 0.31907198421761335,
+      "pred_pixels": 3697,
+      "mask_pixels": 1606
+    },
+    {
+      "file": "tigdog_734_00104303.jpg",
+      "iou": 0.3960569978520475,
+      "coverage": 0.8934390136464402,
+      "precision": 0.4156935054283637,
+      "weighted_frac": 0.41039464710564705,
+      "pred_pixels": 4881,
+      "mask_pixels": 2271
+    },
+    {
+      "file": "tigdog_736_00104583.jpg",
+      "iou": 0.5041269841253837,
+      "coverage": 0.8677595628367882,
+      "precision": 0.5460797799155912,
+      "weighted_frac": 0.5505314253398872,
+      "pred_pixels": 2908,
+      "mask_pixels": 1830
+    },
+    {
+      "file": "tigdog_740_00104949.jpg",
+      "iou": 0.5117634362173283,
+      "coverage": 0.7801908522514637,
+      "precision": 0.597982345521821,
+      "weighted_frac": 0.5959665149183855,
+      "pred_pixels": 3965,
+      "mask_pixels": 3039
+    },
+    {
+      "file": "tigdog_748_00105929.jpg",
+      "iou": 0.17257763448129548,
+      "coverage": 0.6752988047763925,
+      "precision": 0.18819393042156146,
+      "weighted_frac": 0.18418991212816554,
+      "pred_pixels": 5404,
+      "mask_pixels": 1506
+    },
+    {
+      "file": "tigdog_799_00112899.jpg",
+      "iou": 0.4406166730102006,
+      "coverage": 0.8883346124294385,
+      "precision": 0.4664517428965012,
+      "weighted_frac": 0.4716180518950632,
+      "pred_pixels": 4963,
+      "mask_pixels": 2606
+    },
+    {
+      "file": "tigdog_851_00119064.jpg",
+      "iou": 0.1778431012306121,
+      "coverage": 0.8987929433528432,
+      "precision": 0.18147731533524283,
+      "weighted_frac": 0.18140105101469098,
+      "pred_pixels": 5334,
+      "mask_pixels": 1077
+    },
+    {
+      "file": "tigdog_857_00119588.jpg",
+      "iou": 0.29290853031810055,
+      "coverage": 0.8386463952876967,
+      "precision": 0.3104011617347787,
+      "weighted_frac": 0.31359501655471084,
+      "pred_pixels": 5509,
+      "mask_pixels": 2039
+    },
+    {
+      "file": "tigdog_899_00124337.jpg",
+      "iou": 0.07713734733216812,
+      "coverage": 0.5834683954524559,
+      "precision": 0.08163265306103938,
+      "weighted_frac": 0.07675005359910268,
+      "pred_pixels": 4410,
+      "mask_pixels": 617
+    },
+    {
+      "file": "tigdog_904_00124853.jpg",
+      "iou": 0.1075970003257007,
+      "coverage": 0.9065934065685002,
+      "precision": 0.10880316518262842,
+      "weighted_frac": 0.11418242008702313,
+      "pred_pixels": 3033,
+      "mask_pixels": 364
+    },
+    {
+      "file": "youtube_KoSJ0WMf0xY_KoSJ0WMf0xY_000001.jpg",
+      "iou": 0.143717987345153,
+      "coverage": 0.8368421052484765,
+      "precision": 0.14786112833184173,
+      "weighted_frac": 0.15464781698675625,
+      "pred_pixels": 3226,
+      "mask_pixels": 570
+    },
+    {
+      "file": "youtube_qUJVspjaqcI_qUJVspjaqcI_000002.jpg",
+      "iou": 0.27756192326304624,
+      "coverage": 0.8971742543100694,
+      "precision": 0.28668171557490174,
+      "weighted_frac": 0.29998841419345695,
+      "pred_pixels": 3987,
+      "mask_pixels": 1274
+    }
+  ]
+}
